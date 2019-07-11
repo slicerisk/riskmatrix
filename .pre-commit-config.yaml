@@ -1,0 +1,32 @@
+repos:
+-   repo: https://github.com/python/black
+    rev: 19.3b0
+    hooks:
+    - id: black
+      name: Run Black formatter
+      language_version: python3.7
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.2.3
+    hooks:
+    - id: check-docstring-first
+    - id: mixed-line-ending
+      args:
+        - --fix=lf
+    - id: trailing-whitespace
+-   repo: https://github.com/PyCQA/bandit
+    rev: 1.6.2
+    hooks:
+    - id: bandit
+      name: Run bandit for security checks
+      language_version: python3.7
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.711
+    hooks:
+    -   id: mypy
+-   repo: local
+    hooks:
+      - id: pytest
+        name: Run unit tests
+        entry: pytest
+        language: system
+        pass_filenames: false
