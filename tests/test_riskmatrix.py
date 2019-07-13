@@ -17,8 +17,8 @@ def rm_with_axis(rm):
     two = AxisPoint(2, "Cheap")
     three = AxisPoint(3, "Expensive")
 
-    rm.add_axis("x", [a, b, c])
-    rm.add_axis("y", [one, two, three])
+    rm.add_axis("x", points=[a, b, c])
+    rm.add_axis("y", points=[one, two, three])
 
     return rm
 
@@ -76,14 +76,37 @@ class TestAxis:
         b = AxisPoint("B", "Likely", value=2)
         c = AxisPoint("C", "Very Likely", value=3)
 
-        rm.add_axis("x", [a, b, c])
+        rm.add_axis("x", points=[a, b, c])
 
         assert rm.axes["x"][0] is a
         assert rm.axes["x"][1] is b
         assert rm.axes["x"][2] is c
 
-    def test_add_axis_with_int(self, rm):
-        rm.add_axis("x", 4)
+    def test_add_axis_conflicting_named_arguments(self, rm):
+        a = AxisPoint("A", "Unlikely", value=1)
+        b = AxisPoint("B", "Likely", value=2)
+        c = AxisPoint("C", "Very Likely", value=3)
+
+        try:
+            rm.add_axis("x", points=[a, b, c], size=4)
+        except ValueError as e:
+            assert (
+                str(e)
+                == "You should choose between giving a list of points or defining a size."
+            )
+
+    def test_add_axis_requires_named_arguments(self, rm):
+        a = AxisPoint("A", "Unlikely", value=1)
+        b = AxisPoint("B", "Likely", value=2)
+        c = AxisPoint("C", "Very Likely", value=3)
+
+        try:
+            rm.add_axis("x", [a, b, c])
+        except TypeError as e:
+            assert str(e).startswith("add_axis() takes 2 positional arguments")
+
+    def test_add_axis_with_size(self, rm):
+        rm.add_axis("x", size=4)
 
         assert rm.axes["x"][0].code == "1"
         assert rm.axes["x"][1].code == "2"
