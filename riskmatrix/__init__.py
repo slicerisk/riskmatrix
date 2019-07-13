@@ -7,6 +7,7 @@ TODO
 * Import
 * Charts
 """
+__version__ = "20190713"
 
 from .axis import Axis, AxisPoint
 from .category import Category
