@@ -49,7 +49,7 @@ master_doc = "index"
 
 # General information about the project.
 project = u"Riskmatrix"
-copyright = u"2019, Alex de Ruijter"
+copyright = u"2019, Slice"
 author = u"Alex de Ruijter"
 
 # The version info for the project you're documenting, acts as replacement
