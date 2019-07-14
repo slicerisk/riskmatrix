@@ -6,8 +6,8 @@ from .coordinate import Coordinate
 
 
 class RiskMatrix:
-    """
-    Class to build a risk matrix. Contains 1 to n axes.
+    """The main class to build a risk matrix.
+    It contains 1 to n axes.
     """
 
     def __init__(self, name: str) -> None:
@@ -25,7 +25,20 @@ class RiskMatrix:
     def add_axis(
         self, axis_name: str, *, points: List[AxisPoint] = None, size: int = None
     ) -> None:
-        # Support list of axispoint codes and int for size
+        """Add an axis to the risk matrix using a list of axis points.
+
+        Alternatively, you can also give a size number to quickly set up an axis.
+        This is nice if you don't care about the information in the axis points.
+
+        :param axis_name: The name for the axis. E.g. Severity or Probability.
+        :type axis_name: str
+        :param points: A list of AxisPoint that make up the axis, defaults to None
+        :type points: List[AxisPoint], optional
+        :param size: An quick way to set up an axis by defining how many points you want, defaults to None
+        :type size: int, optional
+        :raises ValueError: You have to provide either a list of points or a size. You can't do both.
+        :return: None
+        """
         if points and size:
             raise ValueError(
                 "You should choose between giving a list of points or defining a size."
@@ -44,12 +57,25 @@ class RiskMatrix:
         self._add_axis(axis)
 
     def _add_axis(self, axis: Axis) -> None:
+        """Helper function to add an Axis to the Riskmatrix.
+
+        :param axis: Should be a single Axis.
+        :type axis: Axis
+        :return: None
+        """
         axis.matrix = self
         self.axes[axis.name] = axis
 
     def add_category(self, category: Category) -> None:
-        """ Check the category for None or existing value, and correct if true.
-        Categories should be added from low to high if values are not explicitly set.
+        """Add a Category to the Riskmatrix.
+
+        Categories should be added from low to high if Category.value is not set,
+        because it will be set with an increment. If Category.value is set, the
+        order doesn't matter.
+
+        :param category: An instance of Category.
+        :type category: Category
+        :return: None
         """
         if category.value == None or category.value in [
             c.value for c in self.categories
@@ -58,19 +84,51 @@ class RiskMatrix:
         self.categories[category.value] = category
 
     def map_coordinate(self, category: Category, coordinate: Coordinate) -> None:
+        """Map a Category to a Coordinate.
+
+        :param category: An instance of Category
+        :type category: Category
+        :param coordinate: An instance of Coordinate
+        :type coordinate: Coordinate
+        :return: None
+        """
         self.coordinates[coordinate] = self.categories[category.value]
         coordinate.matrix = self
 
     def map_coordinates(
         self, category: Category, coordinates: List[Coordinate]
     ) -> None:
+        """Given a Category and a list of Coordinate instances, map the Category to
+        each Coordinate.
+
+        :param category: A single Category instance.
+        :type category: Category
+        :param coordinates: A list of Coordinate instances.
+        :type coordinates: List[Coordinate]
+        :return: None
+        """
         for coordinate in coordinates:
             self.map_coordinate(category, coordinate)
 
     def get_categories(self) -> List[Category]:
+        """Return a tuple of all Categories in the Riskmatrix.
+
+        :return: A tuple of Categories
+        :rtype: Tuple[Category]
+        """
         return sorted(self.categories.values(), key=lambda x: x.value)
 
     def get_category(self, coordinate: Union[Coordinate, str]) -> Optional[Category]:
+        """Give a Coordinate to get a Category if there is a mapping between them.
+
+        Alternatively, you can give a string representation of the Coordinate (e.g. 'A2').
+        This works because Coordinate objects allow equality checks based on strings.
+
+        :param coordinate: An instance of Coordinate.
+        :type coordinate: Union[Coordinate, str]
+        :return: An instance of Category or None if no Category could be found.
+        :rtype: Optional[Category]
+        """
         for c in self.coordinates:
             if c == coordinate:
                 return self.coordinates[c]
