@@ -154,12 +154,40 @@ class RiskMatrix:
         """
         return max(self.get_categories())
 
+    def get_max_coordinate(
+        self,
+        *,
+        coordinates: List[Coordinate] = None,
+        coordinate_strings: List[str] = None,
+    ) -> Coordinate:
+        """Get the Coordinate with the highest value for a list of Coordinates.
 
-    def get_max_coordinate(self, coordinates: List[Coordinate]) -> Coordinate:
+        TODO: It's possible to get coordinates with the same value. It now returns the first coordinate with the
+        highest value. This should be unambiguous by having a resolution order for the axes.
+
+        :param coordinates: A list of Coordinate objects.
+        :type coordinates: List[Coordinate]
+        :param coordinate_strings: A list of string Coordinate codes.
+        :type coordinate_strings: List[str]
+        :return: The coordinate with the highest value.
+        :rtype: Coordinate
+        """
+
+        all_coordinates = []
+
+        if coordinate_strings:
+            for c_str in coordinate_strings:
+                c = self.get_coordinate(c_str)
+                if c:
+                    all_coordinates.append(c)
+
+        if coordinates:
+            all_coordinates += coordinates
+
         max_coordinate = None
         max_val = 0
 
-        for coordinate in coordinates:
+        for coordinate in all_coordinates:
             if coordinate.value > max_val:
                 max_val = coordinate.value
                 max_coordinate = coordinate
