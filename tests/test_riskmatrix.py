@@ -22,8 +22,8 @@ def rm_points():
 @pytest.fixture
 def rm_coordinates(rm_with_categories):
     rm = rm_with_categories
-    a, b, c         = rm.axes['x'].get_points()
-    one, two, three = rm.axes['y'].get_points()
+    a, b, c = rm.axes["x"].get_points()
+    one, two, three = rm.axes["y"].get_points()
 
     return (
         Coordinate((a, one)),
@@ -72,9 +72,9 @@ def rm_with_categories(rm_with_axis, rm_categories):
 @pytest.fixture
 def rm_full(rm_with_categories, rm_coordinates):
     rm = rm_with_categories
-    a, b, c         = rm.axes['x'].get_points()
-    one, two, three = rm.axes['y'].get_points()
-    low, med, hig   = rm.get_categories()
+    a, b, c = rm.axes["x"].get_points()
+    one, two, three = rm.axes["y"].get_points()
+    low, med, hig = rm.get_categories()
 
     a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
 
@@ -188,7 +188,7 @@ class TestCoordinate:
         rm.map_coordinate(hig, c3)
 
         assert rm.get_category(a3) == low
-        #assert rm.get_category(b2) == med
+        # assert rm.get_category(b2) == med
         assert rm.get_category(c3) == hig
 
     def test_get_coordinate(self, rm_with_categories, rm_coordinates):
@@ -205,7 +205,7 @@ class TestCoordinate:
         rm.map_coordinate(hig, c3)
 
         get_a3 = rm.get_coordinate("A3")
-        #wrong_a3 = rm.get_coordinate("3A")
+        # wrong_a3 = rm.get_coordinate("3A")
         assert get_a3 == a3
         assert rm.get_category(get_a3) == low
 
@@ -215,4 +215,4 @@ class TestCoordinate:
 
         assert rm.get_max_coordinate(coordinates=rm.coordinates) == max_coordinate
         # This should work once there is an unambiguous way to determine what the maximum coordinate is
-        #assert max(rm.coordinates) == max_coordinate
+        # assert max(rm.coordinates) == max_coordinate
