@@ -40,6 +40,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/slicerisk/riskmatrix",
-    version="20190713",
+    version="0.0.2",
     zip_safe=False,
 )
