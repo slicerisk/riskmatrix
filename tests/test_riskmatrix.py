@@ -8,14 +8,48 @@ def rm():
 
 
 @pytest.fixture
-def rm_with_axis(rm):
-    a = AxisPoint("A", "Unlikely", value=1)
-    b = AxisPoint("B", "Likely", value=2)
-    c = AxisPoint("C", "Very Likely", value=3)
+def rm_points():
+    return (
+        AxisPoint("A", "Unlikely", value=1),
+        AxisPoint("B", "Likely", value=2),
+        AxisPoint("C", "Very Likely", value=3),
+        AxisPoint(1, "No Impact"),
+        AxisPoint(2, "Cheap"),
+        AxisPoint(3, "Expensive"),
+    )
 
-    one = AxisPoint(1, "No Impact")
-    two = AxisPoint(2, "Cheap")
-    three = AxisPoint(3, "Expensive")
+
+@pytest.fixture
+def rm_coordinates(rm_with_categories):
+    rm = rm_with_categories
+    a, b, c         = rm.axes['x'].get_points()
+    one, two, three = rm.axes['y'].get_points()
+
+    return (
+        Coordinate((a, one)),
+        Coordinate((a, two)),
+        Coordinate((a, three)),
+        Coordinate((b, one)),
+        Coordinate((b, two)),
+        Coordinate((b, three)),
+        Coordinate((c, one)),
+        Coordinate((c, two)),
+        Coordinate((c, three)),
+    )
+
+
+@pytest.fixture
+def rm_categories():
+    return (
+        Category("LOW", "Low risk", "#ffff11", "#ffffff"),
+        Category("MED", "Med risk", "#ffff00", "#ffffff"),
+        Category("HIG", "Hig risk", "#ff0000", "#ffffff"),
+    )
+
+
+@pytest.fixture
+def rm_with_axis(rm, rm_points):
+    a, b, c, one, two, three = rm_points
 
     rm.add_axis("x", points=[a, b, c])
     rm.add_axis("y", points=[one, two, three])
@@ -24,33 +58,31 @@ def rm_with_axis(rm):
 
 
 @pytest.fixture
-def rm_with_categories(rm_with_axis):
-    low = Category("LOW", "Low risk", "#ffff11", "#ffffff")
-    med = Category("MED", "Med risk", "#ffff00", "#ffffff")
-    hig = Category("HIG", "Hig risk", "#ff0000", "#ffffff")
+def rm_with_categories(rm_with_axis, rm_categories):
+    rm = rm_with_axis
+    low, med, hig = rm_categories
 
-    rm_with_axis.add_category(low)
-    rm_with_axis.add_category(med)
-    rm_with_axis.add_category(hig)
+    rm.add_category(low)
+    rm.add_category(med)
+    rm.add_category(hig)
 
-    return rm_with_axis
+    return rm
 
 
 @pytest.fixture
-def rm_full(rm_with_categories):
-    a1 = Coordinate((a, one))
-    a2 = Coordinate((a, two))
-    a3 = Coordinate((a, three))
-    b1 = Coordinate((b, one))
-    b2 = Coordinate((b, two))
-    b3 = Coordinate((b, three))
-    c1 = Coordinate((c, one))
-    c2 = Coordinate((c, two))
-    c3 = Coordinate((c, three))
+def rm_full(rm_with_categories, rm_coordinates):
+    rm = rm_with_categories
+    a, b, c         = rm.axes['x'].get_points()
+    one, two, three = rm.axes['y'].get_points()
+    low, med, hig   = rm.get_categories()
+
+    a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
 
     rm.map_coordinates(low, [a1, a2, a3, b1])
     rm.map_coordinates(med, [b2, c1])
     rm.map_coordinates(hig, [b3, c2, c3])
+
+    return rm
 
 
 class TestRiskMatrix:
@@ -71,10 +103,8 @@ class TestRiskMatrix:
 
 
 class TestAxis:
-    def test_add_axis_with_points(self, rm):
-        a = AxisPoint("A", "Unlikely", value=1)
-        b = AxisPoint("B", "Likely", value=2)
-        c = AxisPoint("C", "Very Likely", value=3)
+    def test_add_axis_with_points(self, rm, rm_points):
+        a, b, c, *_ = rm_points
 
         rm.add_axis("x", points=[a, b, c])
 
@@ -82,10 +112,8 @@ class TestAxis:
         assert rm.axes["x"][1] is b
         assert rm.axes["x"][2] is c
 
-    def test_add_axis_conflicting_named_arguments(self, rm):
-        a = AxisPoint("A", "Unlikely", value=1)
-        b = AxisPoint("B", "Likely", value=2)
-        c = AxisPoint("C", "Very Likely", value=3)
+    def test_add_axis_conflicting_named_arguments(self, rm, rm_points):
+        a, b, c, *_ = rm_points
 
         try:
             rm.add_axis("x", points=[a, b, c], size=4)
@@ -95,10 +123,8 @@ class TestAxis:
                 == "You should choose between giving a list of points or defining a size."
             )
 
-    def test_add_axis_requires_named_arguments(self, rm):
-        a = AxisPoint("A", "Unlikely", value=1)
-        b = AxisPoint("B", "Likely", value=2)
-        c = AxisPoint("C", "Very Likely", value=3)
+    def test_add_axis_requires_named_arguments(self, rm, rm_points):
+        a, b, c, *_ = rm_points
 
         try:
             rm.add_axis("x", [a, b, c])
@@ -116,10 +142,8 @@ class TestAxis:
 
 
 class TestCategory:
-    def test_add_category(self, rm):
-        low = Category("LOW", "Low risk", "#ffff11", "#ffffff")
-        med = Category("MED", "Med risk", "#ffff00", "#ffffff")
-        hig = Category("HIG", "Hig risk", "#ff0000", "#ffffff")
+    def test_add_category(self, rm, rm_categories):
+        low, med, hig = rm_categories
 
         rm.add_category(low)
         rm.add_category(med)
@@ -133,37 +157,62 @@ class TestCategory:
         assert rm.categories[2].value == 2
         assert rm.categories[3].value == 3
 
-    def test_get_categories(self, rm_with_categories):
+    def test_get_categories(self, rm_with_categories, rm_categories):
+        low_origin, med_origin, hig_origin = rm_categories
+        low, med, hig = rm_with_categories.get_categories()
+
+        assert low is low_origin
+        assert med is med_origin
+        assert hig is hig_origin
+
+    def test_category_value(self, rm_with_categories):
         low, med, hig = rm_with_categories.get_categories()
 
         assert low.value == 1
         assert med.value == 2
         assert hig.value == 3
 
+    def test_max_category(self, rm_full):
+        assert rm_full.get_max_category().value == 3
+
 
 class TestCoordinate:
-    def test_add_coordinate(self, rm_with_categories):
+    def test_add_coordinate(self, rm_with_categories, rm_coordinates):
+        rm = rm_with_categories
+
+        low, med, hig = rm.get_categories()
+        a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
+
+        rm.map_coordinates(low, [a1, a2, a3, b1])
+        rm.map_coordinate(med, b2)
+        rm.map_coordinate(hig, c3)
+
+        assert rm.get_category(a3) == low
+        #assert rm.get_category(b2) == med
+        assert rm.get_category(c3) == hig
+
+    def test_get_coordinate(self, rm_with_categories, rm_coordinates):
         rm = rm_with_categories
 
         low, med, hig = rm.get_categories()
         a, b, c = rm.axes["x"].get_points()
         one, two, three = rm.axes["y"].get_points()
 
-        a1 = Coordinate((a, one))
-        a2 = Coordinate((a, two))
-        a3 = Coordinate((a, three))
-        b1 = Coordinate((b, one))
-        b2 = Coordinate((b, two))
-        b3 = Coordinate((b, three))
+        a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
 
         rm.map_coordinates(low, [a1, a2, a3, b1])
         rm.map_coordinate(med, b2)
-        rm.map_coordinate(hig, b3)
+        rm.map_coordinate(hig, c3)
 
-        assert rm.get_category("A3") == low
-        assert rm.get_category(a3) == low
-        assert rm.get_category("3A") == None
-        assert a1 == "A1"
-        assert a1 != "1A"
-        assert rm.get_max_category(["A1", "B1", "B2"]) == med
-        assert rm.get_max_coordinate([b3, a1, b2]) == b3
+        get_a3 = rm.get_coordinate("A3")
+        #wrong_a3 = rm.get_coordinate("3A")
+        assert get_a3 == a3
+        assert rm.get_category(get_a3) == low
+
+    def test_max_coordinate(self, rm_full):
+        rm = rm_full
+        max_coordinate = rm.coordinates[-1]
+
+        assert rm.get_max_coordinate(coordinates=rm.coordinates) == max_coordinate
+        # This should work once there is an unambiguous way to determine what the maximum coordinate is
+        #assert max(rm.coordinates) == max_coordinate
