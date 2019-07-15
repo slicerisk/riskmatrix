@@ -1,6 +1,9 @@
+from __future__ import annotations
 from typing import Optional
+from functools import total_ordering
 
 
+@total_ordering
 class Category:
     """
     A collection of points has a RiskMatrix Category.
@@ -27,3 +30,9 @@ class Category:
 
     def __str__(self):
         return f"Category: {self.code} - {self.name}"
+
+    def __eq__(self, other: Category) -> bool:
+        return self.value == other.value
+
+    def __lt__(self, other: Category) -> bool:
+        return self.value < other.value
