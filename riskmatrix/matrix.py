@@ -134,9 +134,6 @@ class RiskMatrix:
             if c == coordinate:
                 return self._coordinates[c]
 
-    def get_max_category(self, coordinates: List[str]) -> Category:
-        max_category = None
-        max_val = 0
     def get_coordinate(self, coordinate: str) -> Coordinate:
         """Get the Coordinate for a string code like 'A2'.
 
@@ -149,7 +146,14 @@ class RiskMatrix:
             if str(c) == coordinate:
                 return c
 
-        return max_category
+    def get_max_category(self) -> Category:
+        """Get the Category with the highest value in the risk matrix.
+
+        :return: The category with the highest value.
+        :rtype: Category
+        """
+        return max(self.get_categories())
+
 
     def get_max_coordinate(self, coordinates: List[Coordinate]) -> Coordinate:
         max_coordinate = None
