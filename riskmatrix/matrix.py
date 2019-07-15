@@ -122,14 +122,11 @@ class RiskMatrix:
         """
         return tuple(sorted(self.categories.values(), key=lambda x: x.value))
 
-    def get_category(self, coordinate: Union[Coordinate, str]) -> Optional[Category]:
+    def get_category(self, coordinate: Coordinate) -> Optional[Category]:
         """Give a Coordinate to get a Category if there is a mapping between them.
 
-        Alternatively, you can give a string representation of the Coordinate (e.g. 'A2').
-        This works because Coordinate objects allow equality checks based on strings.
-
         :param coordinate: An instance of Coordinate.
-        :type coordinate: Union[Coordinate, str]
+        :type coordinate: Coordinate
         :return: An instance of Category or None if no Category could be found.
         :rtype: Optional[Category]
         """
