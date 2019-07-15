@@ -14,13 +14,17 @@ class RiskMatrix:
         self.name = name
         self.axes = {}
         self.categories = {}
-        self.coordinates = {}
+        self._coordinates = {}
 
     def __repr__(self):
         return f"RiskMatrix({self.name}) " + str(self.axes)
 
     def __str__(self):
         return self.name
+
+    @property
+    def coordinates(self):
+        return tuple(self._coordinates.keys())
 
     def add_axis(
         self, axis_name: str, *, points: List[AxisPoint] = None, size: int = None
@@ -34,7 +38,7 @@ class RiskMatrix:
         :type axis_name: str
         :param points: A list of AxisPoint that make up the axis, defaults to None
         :type points: List[AxisPoint], optional
-        :param size: An quick way to set up an axis by defining how many points you want, defaults to None
+        :param size: A quick way to set up an axis by defining how many points you want, defaults to None
         :type size: int, optional
         :raises ValueError: You have to provide either a list of points or a size. You can't do both.
         :return: None
@@ -92,7 +96,7 @@ class RiskMatrix:
         :type coordinate: Coordinate
         :return: None
         """
-        self.coordinates[coordinate] = self.categories[category.value]
+        self._coordinates[coordinate] = self.categories[category.value]
         coordinate.matrix = self
 
     def map_coordinates(
@@ -129,19 +133,24 @@ class RiskMatrix:
         :return: An instance of Category or None if no Category could be found.
         :rtype: Optional[Category]
         """
-        for c in self.coordinates:
+        for c in self._coordinates:
             if c == coordinate:
-                return self.coordinates[c]
+                return self._coordinates[c]
 
     def get_max_category(self, coordinates: List[str]) -> Category:
         max_category = None
         max_val = 0
+    def get_coordinate(self, coordinate: str) -> Coordinate:
+        """Get the Coordinate for a string code like 'A2'.
 
-        for coordinate in coordinates:
-            cat = self.get_category(coordinate)
-            if cat.value > max_val:
-                max_val = cat.value
-                max_category = cat
+        :param coordinate: A string which is the code of the Coordinate. E.g. 'A2'
+        :type coordinate: str
+        :return: A Coordinate object if it can be found, or None.
+        :rtype: Optional[Coordinate]
+        """
+        for c in self._coordinates:
+            if str(c) == coordinate:
+                return c
 
         return max_category
 
