@@ -114,13 +114,13 @@ class RiskMatrix:
         for coordinate in coordinates:
             self.map_coordinate(category, coordinate)
 
-    def get_categories(self) -> List[Category]:
+    def get_categories(self) -> Tuple[Category]:
         """Return a tuple of all Categories in the Riskmatrix.
 
         :return: A tuple of Categories
         :rtype: Tuple[Category]
         """
-        return sorted(self.categories.values(), key=lambda x: x.value)
+        return tuple(sorted(self.categories.values(), key=lambda x: x.value))
 
     def get_category(self, coordinate: Union[Coordinate, str]) -> Optional[Category]:
         """Give a Coordinate to get a Category if there is a mapping between them.
