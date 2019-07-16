@@ -1,8 +1,5 @@
 from typing import List, Optional, Tuple, Union
-
-from .axis import Axis, AxisPoint
-from .category import Category
-from .coordinate import Coordinate
+from . import Axis, AxisPoint, Category, Coordinate
 
 
 class RiskMatrix:
@@ -41,7 +38,6 @@ class RiskMatrix:
         :param size: A quick way to set up an axis by defining how many points you want, defaults to None
         :type size: int, optional
         :raises ValueError: You have to provide either a list of points or a size. You can't do both.
-        :return: None
         """
         if points and size:
             raise ValueError(
@@ -65,7 +61,6 @@ class RiskMatrix:
 
         :param axis: Should be a single Axis.
         :type axis: Axis
-        :return: None
         """
         axis.matrix = self
         self.axes[axis.name] = axis
@@ -79,7 +74,6 @@ class RiskMatrix:
 
         :param category: An instance of Category.
         :type category: Category
-        :return: None
         """
         if category.value == None or category.value in [
             c.value for c in self.categories
@@ -94,7 +88,6 @@ class RiskMatrix:
         :type category: Category
         :param coordinate: An instance of Coordinate
         :type coordinate: Coordinate
-        :return: None
         """
         self._coordinates[coordinate] = self.categories[category.value]
         coordinate.matrix = self
@@ -109,7 +102,6 @@ class RiskMatrix:
         :type category: Category
         :param coordinates: A list of Coordinate instances.
         :type coordinates: List[Coordinate]
-        :return: None
         """
         for coordinate in coordinates:
             self.map_coordinate(category, coordinate)

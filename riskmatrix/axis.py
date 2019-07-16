@@ -48,15 +48,13 @@ class AxisPoint:
 
 
 class Axis:
-    """
-    An axis of a risk matrix. Contains RiskMatrixAxisPoints
-    This class holds the points together and can check and automatically
-    correct the numeric value based on the order of the points.
+    """An axis for a RiskMatrix. Contains AxisPoints.
+    This class holds the points together and gives them an order.
     """
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self.points = []
+        self._points = []
         self.matrix = None
 
     def __repr__(self):
@@ -71,14 +69,29 @@ class Axis:
     def __len__(self) -> int:
         return len(self.points)
 
+    @property
+    def points(self) -> Tuple[AxisPoint]:
+        """Get the points of the Axis.
+
+        :return: An ordered tuple of AxisPoint
+        :rtype: Tuple[AxisPoint]
+        """
+        return tuple(self._points)
+
     def add_point(self, point: AxisPoint) -> None:
+        """Add an AxisPoint to the axis.
+
+        If no value is set, the point will automatically be added.
+        TODO: It's possible to have a point with a set value, and one without
+        that gets set to the same value. This should be avoided.
+
+        :param point: The point to add to the Axis.
+        :type point: AxisPoint
+        """
         # Check the point for None or existing value, and correct if true
         if point.value == None or point.value in [p.value for p in self]:
-            point.value = len(self.points) + 1
+            point.value = len(self._points) + 1
 
         point.axis = self
-        self.points.append(point)
-        self.points = sorted(self.points)
-
-    def get_points(self) -> List[AxisPoint]:
-        return self.points
+        self._points.append(point)
+        self._points = sorted(self.points)

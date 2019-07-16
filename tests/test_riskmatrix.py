@@ -22,8 +22,8 @@ def rm_points():
 @pytest.fixture
 def rm_coordinates(rm_with_categories):
     rm = rm_with_categories
-    a, b, c = rm.axes["x"].get_points()
-    one, two, three = rm.axes["y"].get_points()
+    a, b, c = rm.axes["x"].points
+    one, two, three = rm.axes["y"].points
 
     return (
         Coordinate((a, one)),
@@ -72,8 +72,8 @@ def rm_with_categories(rm_with_axis, rm_categories):
 @pytest.fixture
 def rm_full(rm_with_categories, rm_coordinates):
     rm = rm_with_categories
-    a, b, c = rm.axes["x"].get_points()
-    one, two, three = rm.axes["y"].get_points()
+    a, b, c = rm.axes["x"].points
+    one, two, three = rm.axes["y"].points
     low, med, hig = rm.get_categories()
 
     a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
@@ -195,8 +195,8 @@ class TestCoordinate:
         rm = rm_with_categories
 
         low, med, hig = rm.get_categories()
-        a, b, c = rm.axes["x"].get_points()
-        one, two, three = rm.axes["y"].get_points()
+        a, b, c = rm.axes["x"].points
+        one, two, three = rm.axes["y"].points
 
         a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
 
