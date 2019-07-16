@@ -1,5 +1,5 @@
-Welcome to Riskmatrix's documentation!
-======================================
+Riskmatrix
+==========
 
 .. toctree::
    :maxdepth: 2
@@ -12,9 +12,7 @@ Welcome to Riskmatrix's documentation!
    contributing
    authors
    history
+   api
 
-Indices and tables
-==================
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+
+:ref:`genindex`

@@ -13,19 +13,10 @@ Riskmatrix
         :target: https://riskmatrix.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-
-.. image:: https://pyup.io/repos/github/slicerisk/riskmatrix/shield.svg
-     :target: https://pyup.io/repos/github/slicerisk/riskmatrix/
-     :alt: Updates
-
-
-
 A package to deal with risk matrix data.
-
 
 * Free software: GNU General Public License v3
 * Documentation: https://riskmatrix.readthedocs.io.
-
 
 Features
 --------
