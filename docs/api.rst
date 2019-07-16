@@ -9,3 +9,9 @@ API
 
 .. autoclass:: riskmatrix.AxisPoint
     :members:
+
+.. autoclass:: riskmatrix.Category
+    :members:
+
+.. autoclass:: riskmatrix.Coordinate
+    :members:
