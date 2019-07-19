@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Union
+from typing import List, Dict, Optional, Tuple, Union
 from . import Axis, AxisPoint, Category, Coordinate
 
 
@@ -9,9 +9,9 @@ class RiskMatrix:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self.axes = {}
-        self.categories = {}
-        self._coordinates = {}
+        self.axes: Dict[str, Axis] = {}
+        self.categories: Dict[int, Category] = {}
+        self._coordinates: Dict[Coordinate, Category] = {}
 
     def __repr__(self):
         return f"RiskMatrix({self.name}) " + str(self.axes)
@@ -110,9 +110,10 @@ class RiskMatrix:
             None
         """
         if category.value == None or category.value in [
-            c.value for c in self.categories
+            c.value for c in self.categories.values()
         ]:
             category.value = len(self.categories) + 1
+
         self.categories[category.value] = category
 
     def map_coordinate(self, category: Category, coordinate: Coordinate) -> None:
@@ -144,11 +145,11 @@ class RiskMatrix:
         for coordinate in coordinates:
             self.map_coordinate(category, coordinate)
 
-    def get_categories(self) -> Tuple[Category]:
+    def get_categories(self) -> Tuple[Category, ...]:
         """Return a tuple of all Categories in the Riskmatrix.
 
         Returns:
-            Tuple[Category]: A tuple of Categories.
+            Tuple[Category, ...]: A tuple of Categories.
         """
         return tuple(sorted(self.categories.values(), key=lambda x: x.value))
 
@@ -164,6 +165,7 @@ class RiskMatrix:
         for c in self._coordinates:
             if c == coordinate:
                 return self._coordinates[c]
+        return None
 
     def get_coordinate(self, coordinate: str) -> Optional[Coordinate]:
         """Get the Coordinate for a string code like 'A2'.
@@ -177,6 +179,7 @@ class RiskMatrix:
         for c in self._coordinates:
             if str(c) == coordinate:
                 return c
+        return None
 
     def get_max_category(self) -> Optional[Category]:
         """Get the Category with the highest value in the RiskMatrix.
@@ -192,7 +195,7 @@ class RiskMatrix:
         *,
         coordinates: List[Coordinate] = None,
         coordinate_strings: List[str] = None,
-    ) -> Coordinate:
+    ) -> Optional[Coordinate]:
         """Get the Coordinate with the highest value for a list of Coordinates.
 
         Todo:
@@ -204,7 +207,7 @@ class RiskMatrix:
             coordinate_strings (List[str], optional): A list of string Coordinate codes. Defaults to None.
 
         Returns:
-            Coordinate: The Coordinate with the highest value.
+            Optional[Coordinate]: The Coordinate with the highest value.
         """
 
         all_coordinates = []

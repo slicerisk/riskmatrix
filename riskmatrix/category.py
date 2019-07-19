@@ -31,8 +31,12 @@ class Category:
     def __str__(self):
         return f"Category: {self.code} - {self.name}"
 
-    def __eq__(self, other: Category) -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Category):
+            return NotImplemented
         return self.value == other.value
 
-    def __lt__(self, other: Category) -> bool:
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Category):
+            return NotImplemented
         return self.value < other.value

@@ -32,15 +32,22 @@ class AxisPoint:
     def __str__(self):
         return f"Point: {self.code} - {self.name}"
 
-    def __eq__(self, other: AxisPoint) -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         Allow equality based on code string or value.
         """
-        if type(other) is str:
+        if not isinstance(other, (AxisPoint, str)):
+            return NotImplemented
+
+        if isinstance(other, str):
             return self.code == other
+
         return self.value == other.value
 
-    def __lt__(self, other: AxisPoint) -> bool:
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, AxisPoint):
+            return NotImplemented
+
         return self.value < other.value
 
     def __hash__(self) -> int:
@@ -54,7 +61,7 @@ class Axis:
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self._points = []
+        self._points: List[AxisPoint] = []
         self.matrix = None
 
     def __repr__(self):
@@ -70,11 +77,11 @@ class Axis:
         return len(self.points)
 
     @property
-    def points(self) -> Tuple[AxisPoint]:
+    def points(self) -> Tuple[AxisPoint, ...]:
         """Get the points of the Axis.
 
         :return: An ordered tuple of AxisPoint
-        :rtype: Tuple[AxisPoint]
+        :rtype: Tuple[AxisPoint, ...]
         """
         return tuple(self._points)
 

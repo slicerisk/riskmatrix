@@ -6,7 +6,7 @@ from .axis import AxisPoint
 class Coordinate:
     """A collection of AxisPoints to represent a location in a matrix."""
 
-    def __init__(self, points: Tuple[AxisPoint]) -> None:
+    def __init__(self, points: Tuple[AxisPoint, ...]) -> None:
         if any(p.axis is None for p in points):
             raise ValueError(
                 "There is at least one point which is not tied to an axis."
@@ -38,10 +38,14 @@ class Coordinate:
     def __hash__(self) -> int:
         return hash(self.points)
 
-    def __eq__(self, other: Coordinate) -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Coordinate):
+            return NotImplemented
         return sum(p.value for p in self.points) == sum(p.value for p in other.points)
 
-    def __lt__(self, other: Coordinate) -> bool:
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Coordinate):
+            return NotImplemented
         return sum(p.value for p in self.points) < sum(p.value for p in other.points)
 
     @property
@@ -58,6 +62,6 @@ class Coordinate:
         :return: Return True if coordinate location is equal, otherwise return False.
         :rtype: bool
         """
-        if type(other) is str:
+        if isinstance(other, str):
             return str(self) == other
         return self.points == other.points
