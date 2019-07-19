@@ -4,8 +4,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-
-[packages]
 bumpversion = "==0.5.3"
 watchdog = "==0.9.0"
 tox = "==3.5.2"
@@ -19,6 +17,8 @@ pre-commit = "*"
 mypy = "*"
 sphinxcontrib-napoleon = "*"
 black = "==19.3b0"
+
+[packages]
 
 [requires]
 python_version = "3.7"
