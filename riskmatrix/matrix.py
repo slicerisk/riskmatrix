@@ -79,7 +79,7 @@ class RiskMatrix:
         Returns:
             str: A single letter equivalent to the number.
         """
-        if 0 <= number <= 26:
+        if not 0 <= number <= 26:
             raise ValueError(f"The number {number} has to be between 1 and 26.")
 
         return "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[number - 1]
