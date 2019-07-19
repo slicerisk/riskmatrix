@@ -4,7 +4,11 @@ Usage
 
 To use Riskmatrix in a project::
 
-    import riskmatrix
+    from riskmatrix import Riskmatrix
+
+    rm = Riskmatrix("RAM")
+    rm.add_axis("Severity", size=5)
+    rm.add_axis("Probability", size=5, use_letters=True)
 
 Define a riskmatrix
 -------------------

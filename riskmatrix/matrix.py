@@ -24,7 +24,12 @@ class RiskMatrix:
         return tuple(self._coordinates.keys())
 
     def add_axis(
-        self, axis_name: str, *, points: List[AxisPoint] = None, size: int = None
+        self,
+        axis_name: str,
+        *,
+        points: List[AxisPoint] = None,
+        size: int = None,
+        use_letters: bool = False,
     ) -> None:
         """Add an axis to the risk matrix using a list of axis points.
 
@@ -51,10 +56,25 @@ class RiskMatrix:
                 axis.add_point(point)
         elif size:
             for code in range(1, size + 1):
+                if use_letters:
+                    code = self._convert_number_to_letter(code)
                 axis_point = AxisPoint(str(code))
                 axis.add_point(axis_point)
 
         self._add_axis(axis)
+
+    def _convert_number_to_letter(self, number: int):
+        """Provide a 1 based number to return the appropriate letter.
+
+        :param number: Number 1 or higher
+        :type number: int
+        :return: A single letter equivalent to the number.
+        :rtype: str
+        """
+        if 0 <= number <= 26:
+            raise ValueError(f"The number {number} has to be between 1 and 26.")
+
+        return "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[number - 1]
 
     def _add_axis(self, axis: Axis) -> None:
         """Helper function to add an Axis to the Riskmatrix.

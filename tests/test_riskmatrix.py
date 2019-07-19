@@ -140,6 +140,22 @@ class TestAxis:
         assert rm.axes["x"][3].code == "4"
         assert len(rm.axes["x"]) == 4
 
+    def test_convert_number_to_letter(self, rm):
+        assert rm._convert_number_to_letter(1) == "A"
+        assert rm._convert_number_to_letter(26) == "Z"
+
+        try:
+            number = 27
+            rm._convert_number_to_letter(number)
+        except ValueError as e:
+            assert str(e) == f"The number {number} has to be between 1 and 26."
+
+        try:
+            number = 0
+            rm._convert_number_to_letter(number)
+        except ValueError as e:
+            assert str(e) == f"The number {number} has to be between 1 and 26."
+
 
 class TestCategory:
     def test_add_category(self, rm, rm_categories):
