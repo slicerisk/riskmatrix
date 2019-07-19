@@ -36,13 +36,17 @@ class RiskMatrix:
         Alternatively, you can also give a size number to quickly set up an axis.
         This is nice if you don't care about the information in the axis points.
 
-        :param axis_name: The name for the axis. E.g. Severity or Probability.
-        :type axis_name: str
-        :param points: A list of AxisPoint that make up the axis, defaults to None
-        :type points: List[AxisPoint], optional
-        :param size: A quick way to set up an axis by defining how many points you want, defaults to None
-        :type size: int, optional
-        :raises ValueError: You have to provide either a list of points or a size. You can't do both.
+        Args:
+            axis_name (str): The name for the axis. E.g. Severity or Probability.
+            points (List[AxisPoint], optional): A list of points that make up the axis. Defaults to None.
+            size (int, optional): A quick way to set up an axis by defining how many points you want. Defaults to None.
+            use_letters (bool, optional): Option to use letters instead of numbers when specifying size. Defaults to False.
+
+        Raises:
+            ValueError: You have to provide either a list of points or a size. You can't do both.
+
+        Returns:
+            None
         """
         if points and size:
             raise ValueError(
@@ -64,12 +68,16 @@ class RiskMatrix:
         self._add_axis(axis)
 
     def _convert_number_to_letter(self, number: int):
-        """Provide a 1 based number to return the appropriate letter.
+        """Provide a number between 1 and 26 to return the appropriate letter.
 
-        :param number: Number 1 or higher
-        :type number: int
-        :return: A single letter equivalent to the number.
-        :rtype: str
+        Args:
+            number (int): Number between 1 and 26
+
+        Raises:
+            ValueError: If the number is not between 1 and 26.
+
+        Returns:
+            str: A single letter equivalent to the number.
         """
         if 0 <= number <= 26:
             raise ValueError(f"The number {number} has to be between 1 and 26.")
@@ -79,21 +87,27 @@ class RiskMatrix:
     def _add_axis(self, axis: Axis) -> None:
         """Helper function to add an Axis to the Riskmatrix.
 
-        :param axis: Should be a single Axis.
-        :type axis: Axis
+        Args:
+            axis (Axis): A single Axis.
+
+        Returns:
+            None
         """
         axis.matrix = self
         self.axes[axis.name] = axis
 
     def add_category(self, category: Category) -> None:
-        """Add a Category to the Riskmatrix.
+        """Add a category to the Riskmatrix.
 
         Categories should be added from low to high if Category.value is not set,
         because it will be set with an increment. If Category.value is set, the
         order doesn't matter.
 
-        :param category: An instance of Category.
-        :type category: Category
+        Args:
+            category (Category): An instance of Category.
+
+        Returns:
+            None
         """
         if category.value == None or category.value in [
             c.value for c in self.categories
@@ -102,12 +116,14 @@ class RiskMatrix:
         self.categories[category.value] = category
 
     def map_coordinate(self, category: Category, coordinate: Coordinate) -> None:
-        """Map a Category to a Coordinate.
+        """Map a Category to a Coordinate
 
-        :param category: An instance of Category
-        :type category: Category
-        :param coordinate: An instance of Coordinate
-        :type coordinate: Coordinate
+        Args:
+            category (Category): An instance of Category.
+            coordinate (Coordinate): An instance of Coordinate.
+
+        Returns:
+            None
         """
         self._coordinates[coordinate] = self.categories[category.value]
         coordinate.matrix = self
@@ -118,10 +134,12 @@ class RiskMatrix:
         """Given a Category and a list of Coordinate instances, map the Category to
         each Coordinate.
 
-        :param category: A single Category instance.
-        :type category: Category
-        :param coordinates: A list of Coordinate instances.
-        :type coordinates: List[Coordinate]
+        Args:
+            category (Category): A single Category instance.
+            coordinates (List[Coordinate]): A list of Coordinate instances.
+
+        Returns:
+            None
         """
         for coordinate in coordinates:
             self.map_coordinate(category, coordinate)
@@ -129,42 +147,45 @@ class RiskMatrix:
     def get_categories(self) -> Tuple[Category]:
         """Return a tuple of all Categories in the Riskmatrix.
 
-        :return: A tuple of Categories
-        :rtype: Tuple[Category]
+        Returns:
+            Tuple[Category]: A tuple of Categories.
         """
         return tuple(sorted(self.categories.values(), key=lambda x: x.value))
 
     def get_category(self, coordinate: Coordinate) -> Optional[Category]:
         """Give a Coordinate to get a Category if there is a mapping between them.
 
-        :param coordinate: An instance of Coordinate.
-        :type coordinate: Coordinate
-        :return: An instance of Category or None if no Category could be found.
-        :rtype: Optional[Category]
+        Args:
+            coordinate (Coordinate): An instance of Coordinate.
+
+        Returns:
+            Optional[Category]: An instance of Category (or None if no Category could be found).
         """
         for c in self._coordinates:
             if c == coordinate:
                 return self._coordinates[c]
 
-    def get_coordinate(self, coordinate: str) -> Coordinate:
+    def get_coordinate(self, coordinate: str) -> Optional[Coordinate]:
         """Get the Coordinate for a string code like 'A2'.
 
-        :param coordinate: A string which is the code of the Coordinate. E.g. 'A2'
-        :type coordinate: str
-        :return: A Coordinate object if it can be found, or None.
-        :rtype: Optional[Coordinate]
+        Args:
+            coordinate (str): A string which is the code of the Coordinate. E.g. 'A2'
+
+        Returns:
+            Optional[Coordinate]: A Coordinate if it can be found, or None.
         """
         for c in self._coordinates:
             if str(c) == coordinate:
                 return c
 
-    def get_max_category(self) -> Category:
-        """Get the Category with the highest value in the risk matrix.
+    def get_max_category(self) -> Optional[Category]:
+        """Get the Category with the highest value in the RiskMatrix.
 
-        :return: The category with the highest value.
-        :rtype: Category
+        Returns:
+            Optional[Category]: The Category with the highest value.
+            Will return None if there are no Categories defined in the RiskMatrix.
         """
-        return max(self.get_categories())
+        return max(self.get_categories(), default=None)
 
     def get_max_coordinate(
         self,
@@ -174,15 +195,16 @@ class RiskMatrix:
     ) -> Coordinate:
         """Get the Coordinate with the highest value for a list of Coordinates.
 
-        TODO: It's possible to get coordinates with the same value. It now returns the first coordinate with the
-        highest value. This should be unambiguous by having a resolution order for the axes.
+        Todo:
+            It's possible to get coordinates with the same value. It now returns the first coordinate with the
+            highest value. This should be unambiguous by having a resolution order for the axes.
 
-        :param coordinates: A list of Coordinate objects.
-        :type coordinates: List[Coordinate]
-        :param coordinate_strings: A list of string Coordinate codes.
-        :type coordinate_strings: List[str]
-        :return: The coordinate with the highest value.
-        :rtype: Coordinate
+        Args:
+            coordinates (List[Coordinate], optional): A list of Coordinates. Defaults to None.
+            coordinate_strings (List[str], optional): A list of string Coordinate codes. Defaults to None.
+
+        Returns:
+            Coordinate: The Coordinate with the highest value.
         """
 
         all_coordinates = []
