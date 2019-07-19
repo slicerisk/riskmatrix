@@ -55,12 +55,11 @@ class Coordinate:
     def location_equals(self, other: Union[Coordinate, str]) -> bool:
         """Check if two Coordinates are pointing to the same location.
 
-        Support equality for both string and Coordinate format.
+        Args:
+            other (Union[Coordinate, str]): A Coordinate object or string version.
 
-        :param other: A Coordinate object or string representation.
-        :type other: Union[Coordinate, str]
-        :return: Return True if coordinate location is equal, otherwise return False.
-        :rtype: bool
+        Returns:
+            bool: Return True if coordinate location is equal, return False otherwise.
         """
         if isinstance(other, str):
             return str(self) == other

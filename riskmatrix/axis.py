@@ -5,8 +5,7 @@ from typing import List, Optional, Tuple, Union
 
 @total_ordering
 class AxisPoint:
-    """
-    Has:
+    """Has:
     * a code (e.g. 'A' or 1)
     * a name (e.g. 'Unlikely')
     * a description (e.g. For a definition.)
@@ -33,9 +32,7 @@ class AxisPoint:
         return f"Point: {self.code} - {self.name}"
 
     def __eq__(self, other: object) -> bool:
-        """
-        Allow equality based on code string or value.
-        """
+        """Allow equality based on code string or value."""
         if not isinstance(other, (AxisPoint, str)):
             return NotImplemented
 
@@ -56,6 +53,7 @@ class AxisPoint:
 
 class Axis:
     """An axis for a RiskMatrix. Contains AxisPoints.
+
     This class holds the points together and gives them an order.
     """
 
@@ -80,8 +78,8 @@ class Axis:
     def points(self) -> Tuple[AxisPoint, ...]:
         """Get the points of the Axis.
 
-        :return: An ordered tuple of AxisPoint
-        :rtype: Tuple[AxisPoint, ...]
+        Returns:
+            Tuple[AxisPoint, ...]: An ordered tuple of AxisPoint.
         """
         return tuple(self._points)
 

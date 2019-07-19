@@ -1,11 +1,9 @@
 """
-TODO
-* Add matrix to coordinate so it can travel
-* Write docstrings
-* Type annotations
-* Deterministic max value > what if 2 coordinates have the same value
-* Import
-* Charts
+==========
+Riskmatrix
+==========
+
+A library to deal with risk matrix data.
 """
 __version__ = "0.0.4"
 

@@ -5,9 +5,7 @@ from functools import total_ordering
 
 @total_ordering
 class Category:
-    """
-    A collection of points has a RiskMatrix Category.
-    """
+    """A collection of points has a RiskMatrix Category."""
 
     def __init__(
         self,
