@@ -79,18 +79,28 @@ class Axis:
         return tuple(self._points)
 
     def add_point(self, point: AxisPoint) -> None:
-        """Add an AxisPoint to the axis.
+        """Add an AxisPoint to the Axis.
 
-        If no value is set, the point will automatically be added.
-        TODO: It's possible to have a point with a set value, and one without
-        that gets set to the same value. This should be avoided.
+        If no value is set, the AxisPoint value is set to the length+1 of the Axis.
+        This means it's possible to have a point with a set value, and one without
+        that gets set to the same value. In these cases, a ValueError is thrown.
 
-        :param point: The point to add to the Axis.
-        :type point: AxisPoint
+        Args:
+            point (AxisPoint): The point to add to the Axis.
+
+        Raises:
+            ValueError: Is raised when attempting to add an AxisPoint with a value that already exists.
+
+        Returns:
+            None
         """
-        # Check the point for None or existing value, and correct if true
-        if point.value == None or point.value in [p.value for p in self]:
+        if point.value == None:
             point.value = len(self._points) + 1
+
+        if point.value in [p.value for p in self._points]:
+            raise ValueError(
+                f"An AxisPoint with value {point.value} already exists on Axis {self.name}."
+            )
 
         point.axis = self
         self._points.append(point)

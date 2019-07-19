@@ -1,5 +1,5 @@
 import pytest
-from riskmatrix import RiskMatrix, AxisPoint, Category, Coordinate
+from riskmatrix import RiskMatrix, Axis, AxisPoint, Category, Coordinate
 
 
 @pytest.fixture
@@ -111,6 +111,47 @@ class TestAxis:
         assert rm.axes["x"][0] is a
         assert rm.axes["x"][1] is b
         assert rm.axes["x"][2] is c
+
+    def test_add_conflicting_point_value(self):
+        ax = Axis("x")
+        point = AxisPoint("A")
+        ax.add_point(point)
+
+        assert ax[0].value == 1
+        assert ax[0].code == "A"
+
+        # Check if points with existing values throw an error.
+        conflicting_point = AxisPoint("B", value=1)
+        try:
+            ax.add_point(conflicting_point)
+        except ValueError as e:
+            assert (
+                str(e)
+                == f"An AxisPoint with value {conflicting_point.value} already exists on Axis {ax.name}."
+            )
+
+        assert len(ax) == 1
+
+    def test_add_conflicting_empty_point_value(self):
+        ax = Axis("x")
+        point = AxisPoint("A", value=2)
+        ax.add_point(point)
+
+        assert ax[0].value == 2
+        assert ax[0].code == "A"
+
+        # A point without a value that gets assigned a value that happens to exist
+        # already should throw an error.
+        conflicting_point = AxisPoint("B")
+        try:
+            ax.add_point(conflicting_point)
+        except ValueError as e:
+            assert (
+                str(e)
+                == f"An AxisPoint with value {conflicting_point.value} already exists on Axis {ax.name}."
+            )
+
+        assert len(ax) == 1
 
     def test_add_axis_conflicting_named_arguments(self, rm, rm_points):
         a, b, c, *_ = rm_points
