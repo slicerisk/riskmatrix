@@ -72,8 +72,6 @@ def rm_with_categories(rm_with_axis, rm_categories):
 @pytest.fixture
 def rm_full(rm_with_categories, rm_coordinates):
     rm = rm_with_categories
-    a, b, c = rm.axes["x"].points
-    one, two, three = rm.axes["y"].points
     low, med, hig = rm.get_categories()
 
     a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
@@ -241,7 +239,7 @@ class TestCoordinate:
         a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
 
         rm.map_coordinates(low, [a1, a2, a3, b1])
-        rm.map_coordinate(med, b2)
+        rm.map_coordinates(med, (b2, b3, c1, c2))
         rm.map_coordinate(hig, c3)
 
         assert rm.get_category(a3) == low
@@ -252,13 +250,10 @@ class TestCoordinate:
         rm = rm_with_categories
 
         low, med, hig = rm.get_categories()
-        a, b, c = rm.axes["x"].points
-        one, two, three = rm.axes["y"].points
-
         a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
 
         rm.map_coordinates(low, [a1, a2, a3, b1])
-        rm.map_coordinate(med, b2)
+        rm.map_coordinates(med, (b2, b3, c1, c2))
         rm.map_coordinate(hig, c3)
 
         get_a3 = rm.get_coordinate("A3")
