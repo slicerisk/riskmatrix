@@ -1,6 +1,13 @@
 from __future__ import annotations
+from collections import namedtuple
 from functools import total_ordering
 from typing import List, Optional, Tuple, Union
+
+# This is a hack to make mypy happy
+if False:
+    from .matrix import RiskMatrix
+
+Point = namedtuple("Point", "code name description", defaults=[""])
 
 
 @total_ordering
@@ -13,17 +20,13 @@ class AxisPoint:
     """
 
     def __init__(
-        self,
-        code: str,
-        name: str = "",
-        description: str = "",
-        value: Optional[int] = None,
+        self, code: str, name: str, description: str, value: int, axis: Axis
     ) -> None:
         self.code = code
         self.name = name
         self.desc = description
         self.value = value
-        self.axis = None
+        self.axis = axis
 
     def __repr__(self):
         return f"AxisPoint{self.code, self.name, self.desc}"
@@ -57,10 +60,10 @@ class Axis:
     This class holds the points together and gives them an order.
     """
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, matrix: RiskMatrix) -> None:
         self.name = name
         self._points: List[AxisPoint] = []
-        self.matrix = None
+        self.matrix = matrix
 
     def __repr__(self):
         return f"Axis({self.name})"
@@ -83,7 +86,7 @@ class Axis:
         """
         return tuple(self._points)
 
-    def add_point(self, point: AxisPoint) -> None:
+    def add_point(self, point: Point) -> None:
         """Add an AxisPoint to the Axis.
 
         If no value is set, the AxisPoint value is set to the length+1 of the Axis.
@@ -99,14 +102,10 @@ class Axis:
         Returns:
             None
         """
-        if point.value == None:
-            point.value = len(self._points) + 1
+        code, name, description = point
+        value = len(self._points) + 1
+        axis = self
 
-        if point.value in [p.value for p in self._points]:
-            raise ValueError(
-                f"An AxisPoint with value {point.value} already exists on Axis {self.name}."
-            )
-
-        point.axis = self
-        self._points.append(point)
+        axis_point = AxisPoint(code, name, description, value, axis)
+        self._points.append(axis_point)
         self._points = sorted(self.points)

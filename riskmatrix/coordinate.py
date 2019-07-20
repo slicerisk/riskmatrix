@@ -2,6 +2,10 @@ from __future__ import annotations
 from typing import Tuple, Union
 from .axis import AxisPoint
 
+# This is a hack to make mypy happy
+if False:
+    from .matrix import RiskMatrix
+
 
 class Coordinate:
     """A collection of AxisPoints to represent a location in a matrix."""
@@ -23,7 +27,7 @@ class Coordinate:
             )
 
         self.points = points
-        self.matrix = None
+        self.matrix: RiskMatrix = set(p.axis.matrix for p in points).pop()
 
     def __repr__(self):
         return f"Coordinate({self.points})"

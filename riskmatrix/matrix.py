@@ -1,5 +1,5 @@
-from typing import List, Dict, Optional, Tuple, Union
-from . import Axis, AxisPoint, Category, Coordinate
+from typing import Dict, Iterable, Optional, Tuple, Union
+from . import Axis, AxisPoint, Category, Coordinate, Point
 
 
 class RiskMatrix:
@@ -27,7 +27,7 @@ class RiskMatrix:
         self,
         axis_name: str,
         *,
-        points: List[AxisPoint] = None,
+        points: Iterable[Tuple] = None,
         size: int = None,
         use_letters: bool = False,
     ) -> None:
@@ -53,19 +53,20 @@ class RiskMatrix:
                 "You should choose between giving a list of points or defining a size."
             )
 
-        axis = Axis(axis_name)
+        axis = Axis(axis_name, self)
 
         if points:
             for point in points:
-                axis.add_point(point)
+                p = Point(*point)
+                axis.add_point(p)
         elif size:
             for code in range(1, size + 1):
                 if use_letters:
                     code = self._convert_number_to_letter(code)
-                axis_point = AxisPoint(str(code))
+                axis_point = Point(str(code), "")
                 axis.add_point(axis_point)
 
-        self._add_axis(axis)
+        self.axes[axis.name] = axis
 
     def _convert_number_to_letter(self, number: int):
         """Provide a number between 1 and 26 to return the appropriate letter.
@@ -84,19 +85,9 @@ class RiskMatrix:
 
         return "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[number - 1]
 
-    def _add_axis(self, axis: Axis) -> None:
-        """Helper function to add an Axis to the Riskmatrix.
-
-        Args:
-            axis (Axis): A single Axis.
-
-        Returns:
-            None
-        """
-        axis.matrix = self
-        self.axes[axis.name] = axis
-
-    def add_category(self, category: Category) -> None:
+    def add_category(
+        self, code: str, name: str, color: str, text_color: str, description: str = ""
+    ) -> None:
         """Add a category to the Riskmatrix.
 
         Categories should be added from low to high if Category.value is not set,
@@ -109,11 +100,8 @@ class RiskMatrix:
         Returns:
             None
         """
-        if category.value == None or category.value in [
-            c.value for c in self.categories.values()
-        ]:
-            category.value = len(self.categories) + 1
-
+        category = Category(code, name, color, text_color, description)
+        category.value = len(self.categories)
         self.categories[category.value] = category
 
     def map_coordinate(self, category: Category, coordinate: Coordinate) -> None:
@@ -127,10 +115,9 @@ class RiskMatrix:
             None
         """
         self._coordinates[coordinate] = self.categories[category.value]
-        coordinate.matrix = self
 
     def map_coordinates(
-        self, category: Category, coordinates: List[Coordinate]
+        self, category: Category, coordinates: Iterable[Coordinate]
     ) -> None:
         """Given a Category and a list of Coordinate instances, map the Category to
         each Coordinate.
@@ -193,8 +180,8 @@ class RiskMatrix:
     def get_max_coordinate(
         self,
         *,
-        coordinates: List[Coordinate] = None,
-        coordinate_strings: List[str] = None,
+        coordinates: Iterable[Coordinate] = None,
+        coordinate_strings: Iterable[str] = None,
     ) -> Optional[Coordinate]:
         """Get the Coordinate with the highest value for a list of Coordinates.
 

@@ -8,20 +8,14 @@ class Category:
     """A collection of points has a RiskMatrix Category."""
 
     def __init__(
-        self,
-        code: str,
-        name: str,
-        color: str,
-        text_color: str,
-        description: str = "",
-        value: Optional[int] = None,
+        self, code: str, name: str, color: str, text_color: str, description: str = ""
     ) -> None:
         self.code = code
         self.name = name
         self.desc = description
         self.color = color
         self.text_color = text_color
-        self.value = value
+        self.value: int = 0
 
     def __repr__(self):
         return f"Category{self.code, self.name, self.desc}"
