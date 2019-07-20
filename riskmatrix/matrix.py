@@ -37,7 +37,7 @@ class RiskMatrix:
         points: Iterable[Tuple] = None,
         size: int = None,
         use_letters: bool = False,
-    ) -> None:
+    ) -> Axis:
         """Add an axis to the risk matrix using a list of axis points.
 
         Alternatively, you can also give a size number to quickly set up an axis.
@@ -75,6 +75,8 @@ class RiskMatrix:
 
         self.axes[axis.name] = axis
 
+        return axis
+
     def _convert_number_to_letter(self, number: int):
         """Provide a number between 1 and 26 to return the appropriate letter.
 
@@ -94,7 +96,7 @@ class RiskMatrix:
 
     def add_category(
         self, code: str, name: str, color: str, text_color: str, description: str = ""
-    ) -> None:
+    ) -> Category:
         """Add a category to the Riskmatrix.
 
         Categories should be added from low to high if Category.value is not set,
@@ -111,7 +113,11 @@ class RiskMatrix:
         category.value = len(self.categories)
         self._categories[category.value] = category
 
-    def map_coordinate(self, category: Category, coordinate: Coordinate) -> None:
+        return category
+
+    def map_coordinate(
+        self, category: Category, points: Iterable[AxisPoint]
+    ) -> Coordinate:
         """Map a Category to a Coordinate
 
         Args:
