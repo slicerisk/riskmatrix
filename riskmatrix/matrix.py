@@ -127,15 +127,18 @@ class RiskMatrix:
         Returns:
             None
         """
-        if coordinate.matrix is not self:
+        c = Coordinate(points)
+
+        if c.matrix is not self:
             raise ValueError(
-                f"This Coordinate {coordinate} does not belong to RiskMatrix {self.name}"
+                f"This Coordinate {c} does not belong to RiskMatrix {self.name}"
             )
 
-        self._coordinates[coordinate] = self.categories[category.value]
+        self._coordinates[c] = self.categories[category.value]
+        return c
 
     def map_coordinates(
-        self, category: Category, coordinates: Iterable[Coordinate]
+        self, category: Category, coordinates: Iterable[Iterable[AxisPoint]]
     ) -> None:
         """Given a Category and a list of Coordinate instances, map the Category to
         each Coordinate.
@@ -147,8 +150,8 @@ class RiskMatrix:
         Returns:
             None
         """
-        for coordinate in coordinates:
-            self.map_coordinate(category, coordinate)
+        for coordinate_points in coordinates:
+            self.map_coordinate(category, coordinate_points)
 
     def get_category(self, coordinate: Coordinate) -> Optional[Category]:
         """Give a Coordinate to get a Category if there is a mapping between them.

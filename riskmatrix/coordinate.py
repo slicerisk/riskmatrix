@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Tuple, Union
+from typing import Iterable, Union
 from .axis import AxisPoint
 
 # This is a hack to make mypy happy
@@ -10,7 +10,7 @@ if False:
 class Coordinate:
     """A collection of AxisPoints to represent a location in a matrix."""
 
-    def __init__(self, points: Tuple[AxisPoint, ...]) -> None:
+    def __init__(self, points: Iterable[AxisPoint]) -> None:
         if any(p.axis is None for p in points):
             raise ValueError(
                 "There is at least one point which is not tied to an axis."
@@ -26,7 +26,7 @@ class Coordinate:
                 "The points in this coordinate are not all from the same matrix."
             )
 
-        self.points = points
+        self.points = tuple(points)
         self.matrix: RiskMatrix = set(p.axis.matrix for p in points).pop()
 
     def __repr__(self):
