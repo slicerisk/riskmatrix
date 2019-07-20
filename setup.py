@@ -11,7 +11,7 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = []
+requirements = []  # type: ignore
 
 setup_requirements = ["pytest-runner"]
 
@@ -40,6 +40,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/slicerisk/riskmatrix",
-    version="0.0.5",
+    version="0.0.6",
     zip_safe=False,
 )
