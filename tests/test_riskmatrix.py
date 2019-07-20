@@ -72,7 +72,7 @@ def rm_coordinates(rm_with_categories):
 @pytest.fixture
 def rm_full(rm_with_categories, rm_coordinates):
     rm = rm_with_categories
-    low, med, hig = rm.get_categories()
+    low, med, hig = rm.categories
 
     a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
 
@@ -177,14 +177,14 @@ class TestCategory:
 
     def test_get_categories(self, rm_with_categories, rm_categories):
         low_origin, med_origin, hig_origin = rm_categories
-        low, med, hig = rm_with_categories.get_categories()
+        low, med, hig = rm_with_categories.categories
 
         assert (low.code, low.name, low.color, low.text_color) == (low_origin)
         assert (med.code, med.name, med.color, med.text_color) == (med_origin)
         assert (hig.code, hig.name, hig.color, hig.text_color) == (hig_origin)
 
     def test_category_value(self, rm_with_categories):
-        low, med, hig = rm_with_categories.get_categories()
+        low, med, hig = rm_with_categories.categories
 
         assert low.value == 0
         assert med.value == 1
@@ -198,7 +198,7 @@ class TestCoordinate:
     def test_add_coordinate(self, rm_with_categories, rm_coordinates):
         rm = rm_with_categories
 
-        low, med, hig = rm.get_categories()
+        low, med, hig = rm.categories
         a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
 
         rm.map_coordinates(low, [a1, a2, a3, b1])
@@ -212,7 +212,7 @@ class TestCoordinate:
     def test_get_coordinate(self, rm_with_categories, rm_coordinates):
         rm = rm_with_categories
 
-        low, med, hig = rm.get_categories()
+        low, med, hig = rm.categories
         a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
 
         rm.map_coordinates(low, [a1, a2, a3, b1])

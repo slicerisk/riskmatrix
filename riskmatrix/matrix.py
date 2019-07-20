@@ -8,7 +8,7 @@ class RiskMatrix:
     def __init__(self, name: str) -> None:
         self.name = name
         self.axes: Dict[str, Axis] = {}
-        self.categories: Dict[int, Category] = {}
+        self._categories: Dict[int, Category] = {}
         self._coordinates: Dict[Coordinate, Category] = {}
 
     def __repr__(self):
@@ -16,6 +16,15 @@ class RiskMatrix:
 
     def __str__(self):
         return self.name
+
+    @property
+    def categories(self) -> Tuple[Category, ...]:
+        """Return a tuple of all Categories in the Riskmatrix.
+
+        Returns:
+            Tuple[Category, ...]: A tuple of Categories.
+        """
+        return tuple(sorted(self._categories.values(), key=lambda x: x.value))
 
     @property
     def coordinates(self):
@@ -100,7 +109,7 @@ class RiskMatrix:
         """
         category = Category(code, name, color, text_color, description)
         category.value = len(self.categories)
-        self.categories[category.value] = category
+        self._categories[category.value] = category
 
     def map_coordinate(self, category: Category, coordinate: Coordinate) -> None:
         """Map a Category to a Coordinate
@@ -134,14 +143,6 @@ class RiskMatrix:
         """
         for coordinate in coordinates:
             self.map_coordinate(category, coordinate)
-
-    def get_categories(self) -> Tuple[Category, ...]:
-        """Return a tuple of all Categories in the Riskmatrix.
-
-        Returns:
-            Tuple[Category, ...]: A tuple of Categories.
-        """
-        return tuple(sorted(self.categories.values(), key=lambda x: x.value))
 
     def get_category(self, coordinate: Coordinate) -> Optional[Category]:
         """Give a Coordinate to get a Category if there is a mapping between them.
@@ -178,7 +179,7 @@ class RiskMatrix:
             Optional[Category]: The Category with the highest value.
             Will return None if there are no Categories defined in the RiskMatrix.
         """
-        return max(self.get_categories(), default=None)
+        return max(self.categories, default=None)
 
     def get_max_coordinate(
         self,
