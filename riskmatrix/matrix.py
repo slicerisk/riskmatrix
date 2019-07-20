@@ -3,9 +3,7 @@ from . import Axis, AxisPoint, Category, Coordinate, Point
 
 
 class RiskMatrix:
-    """The main class to build a risk matrix.
-    It contains 1 to n axes.
-    """
+    """The main class to build a risk matrix."""
 
     def __init__(self, name: str) -> None:
         self.name = name
