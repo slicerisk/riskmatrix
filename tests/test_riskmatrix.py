@@ -211,18 +211,19 @@ class TestCoordinate:
 
     def test_get_coordinate(self, rm_with_categories, rm_coordinates):
         rm = rm_with_categories
-
         low, med, hig = rm.categories
-        a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
+        a, b, c = rm.axes["x"].points
+        one, two, three = rm.axes["y"].points
 
-        rm.map_coordinates(low, [a1, a2, a3, b1])
-        rm.map_coordinates(med, (b2, b3, c1, c2))
-        rm.map_coordinate(hig, c3)
+        rm.map_coordinates(low, [(a, one), (a, two), (a, three), (b, one)])
 
-        get_a3 = rm.get_coordinate("A3")
-        # wrong_a3 = rm.get_coordinate("3A")
-        assert get_a3 == a3
-        assert rm.get_category(get_a3) == low
+        rm.map_coordinates(med, [(b, two), (b, three), (c, one), (c, two)])
+
+        c2 = rm.map_coordinate(hig, (c, two))
+
+        get_c2 = rm.get_coordinate("C2")
+        assert get_c2 == c2
+        assert rm.get_category(get_c2) == med
 
     def test_max_coordinate(self, rm_full):
         rm = rm_full
