@@ -112,6 +112,11 @@ class RiskMatrix:
         Returns:
             None
         """
+        if coordinate.matrix is not self:
+            raise ValueError(
+                f"This Coordinate {coordinate} does not belong to RiskMatrix {self.name}"
+            )
+
         self._coordinates[coordinate] = self.categories[category.value]
 
     def map_coordinates(
