@@ -16,6 +16,7 @@ pylint = "*"
 pre-commit = "*"
 mypy = "*"
 black = "==19.3b0"
+rope = "*"
 
 [packages]
 
