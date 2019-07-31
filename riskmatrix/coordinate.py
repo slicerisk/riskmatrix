@@ -1,4 +1,5 @@
 from __future__ import annotations
+from itertools import combinations
 from typing import Iterable, Union
 from .axis import AxisPoint
 
@@ -19,6 +20,13 @@ class Coordinate:
         if any(p.axis.matrix is None for p in points):
             raise ValueError(
                 "There is at least one point with an axis that is not tied to a matrix."
+            )
+
+        point_pairs = (pair for pair in combinations(points, 2))
+        pair_sets = (set((pair[0].axis, pair[1].axis)) for pair in point_pairs)
+        if any((len(s) == 1 for s in pair_sets)):
+            raise ValueError(
+                "There are two points on the same axis. Every point of a coordinate should be on a different axis."
             )
 
         if len(set(p.axis.matrix for p in points)) != 1:

@@ -209,6 +209,21 @@ class TestCoordinate:
         # assert rm.get_category(b2) == med
         assert rm.get_category(c3) == hig
 
+    def test_add_multiple_points_on_one_axis(self, rm_with_axis):
+        rm = rm_with_axis
+
+        a, b, _ = rm.axes["x"].points
+
+        try:
+            Coordinate((a, b))
+        except ValueError as e:
+            assert (
+                str(e)
+                == "There are two points on the same axis. Every point of a coordinate should be on a different axis."
+            )
+        else:
+            assert False
+
     def test_get_coordinate(self, rm_with_categories, rm_coordinates):
         rm = rm_with_categories
         low, med, hig = rm.categories
