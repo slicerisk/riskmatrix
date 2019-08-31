@@ -225,6 +225,20 @@ class TestCoordinate:
         assert get_c2 == c2
         assert rm.get_category(get_c2) == med
 
+    def test_coordinate_code(self, rm_with_categories):
+
+        rm = rm_with_categories
+        a, *_ = rm.axes["x"].points
+        one, *_ = rm.axes["y"].points
+
+        a1 = Coordinate((a, one))
+        a1_reverse = Coordinate((one, a))
+
+        assert str(a1) == "A1"
+        assert str(a1) != "1A"
+        assert str(a1_reverse) == "A1"
+        assert str(a1_reverse) != "1A"
+
     def test_max_coordinate(self, rm_full):
         rm = rm_full
         max_coordinate = rm.coordinates[-1]
