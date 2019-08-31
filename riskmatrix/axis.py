@@ -94,7 +94,7 @@ class Axis:
         that gets set to the same value. In these cases, a ValueError is thrown.
 
         Args:
-            point (AxisPoint): The point to add to the Axis.
+            point (Point): The point to add to the Axis.
 
         Raises:
             ValueError: Is raised when attempting to add an AxisPoint with a value that already exists.

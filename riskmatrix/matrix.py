@@ -57,13 +57,20 @@ class RiskMatrix:
     def categories(self) -> Tuple[Category, ...]:
         """Return a tuple of all Categories in the Riskmatrix.
 
+        Sorted by value from low to high.
+
         Returns:
             Tuple[Category, ...]: A tuple of Categories.
         """
         return tuple(sorted(self._categories.values(), key=lambda x: x.value))
 
     @property
-    def coordinates(self):
+    def coordinates(self) -> Tuple[Coordinate, ...]:
+        """Return a tuple of all Coordinates in the RiskMatrix.
+
+        Returns:
+            Tuple[Coordinate, ...]: Unordered tuple of Coordinates.
+        """
         return tuple(self._coordinates.keys())
 
     def add_axis(
@@ -81,7 +88,7 @@ class RiskMatrix:
 
         Args:
             axis_name (str): The name for the axis. E.g. Severity or Probability.
-            points (List[AxisPoint], optional): A list of points that make up the axis. Defaults to None.
+            points (Iterable[Tuple], optional): A list of points that make up the axis. Defaults to None.
             size (int, optional): A quick way to set up an axis by defining how many points you want. Defaults to None.
             use_letters (bool, optional): Option to use letters instead of numbers when specifying size. Defaults to False.
 
@@ -89,7 +96,7 @@ class RiskMatrix:
             ValueError: You have to provide either a list of points or a size. You can't do both.
 
         Returns:
-            None
+            Axis
         """
         if points and size:
             raise ValueError(
@@ -135,15 +142,17 @@ class RiskMatrix:
     ) -> Category:
         """Add a category to the Riskmatrix.
 
-        Categories should be added from low to high if Category.value is not set,
-        because it will be set with an increment. If Category.value is set, the
-        order doesn't matter.
+        Categories should be added from low to high.
 
         Args:
-            category (Category): An instance of Category.
+            code (str): A short code for the category. E.g. 'HIG'
+            name (str): A full name for the category. E.g. 'High risk'
+            color (str): A hexadecimal background color code.
+            text_color (str): A hexadecimal text color code.
+            description (str, optional): A longer description about what this category means. Defaults to "".
 
         Returns:
-            None
+            Category
         """
         category = Category(code, name, color, text_color, description)
         category.value = len(self.categories)
@@ -158,10 +167,10 @@ class RiskMatrix:
 
         Args:
             category (Category): An instance of Category.
-            coordinate (Coordinate): An instance of Coordinate.
+            points (Iterable[AxisPoint]): A collection of AxisPoint that make up a Coordinate.
 
         Returns:
-            None
+            Coordinate
         """
         c = Coordinate(points)
 
@@ -176,12 +185,12 @@ class RiskMatrix:
     def map_coordinates(
         self, category: Category, coordinates: Iterable[Iterable[AxisPoint]]
     ) -> None:
-        """Given a Category and a list of Coordinate instances, map the Category to
+        """Given a Category and a list of AxisPoint collections (each making up a Coordinate), map the Category to
         each Coordinate.
 
         Args:
-            category (Category): A single Category instance.
-            coordinates (List[Coordinate]): A list of Coordinate instances.
+            category (Category): A single Category.
+            coordinates (Iterable[Iterable[AxisPoint]]): A list of AxisPoint iterables that represent Coordinates.
 
         Returns:
             None
@@ -239,8 +248,8 @@ class RiskMatrix:
             highest value. This should be unambiguous by having a resolution order for the axes.
 
         Args:
-            coordinates (List[Coordinate], optional): A list of Coordinates. Defaults to None.
-            coordinate_strings (List[str], optional): A list of string Coordinate codes. Defaults to None.
+            coordinates (Iterable[Coordinate], optional): An iterable of Coordinates. Defaults to None.
+            coordinate_strings (Iterable[str], optional): An iterable of string Coordinate codes. Defaults to None.
 
         Returns:
             Optional[Coordinate]: The Coordinate with the highest value.
