@@ -16,11 +16,17 @@ class AxesDescriptor:
     def __get__(self, instance, owner) -> Tuple[Axis, ...]:
         return tuple(self._axes)
 
-    def __getitem__(self, val: str) -> Axis:
-        for axis in self._axes:
-            if axis.name == val:
-                return axis
-        raise KeyError(f"No axis named {val}.")
+    def __getitem__(self, val: Union[str, int]) -> Axis:
+        if isinstance(val, str):
+            for axis in self._axes:
+                if axis.name == val:
+                    return axis
+            raise KeyError(f"No axis named {val}.")
+
+        if isinstance(val, int):
+            return self._axes[val]
+
+        raise TypeError(f"Axes indices must be integers, or strings, not {val}")
 
     def __set__(self, instance, val):
         raise AttributeError("Can't override axes attribute. Add axes individually.")
