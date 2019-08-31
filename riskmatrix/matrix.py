@@ -2,12 +2,48 @@ from typing import Dict, Iterable, Optional, Tuple, Union
 from . import Axis, AxisPoint, Category, Coordinate, Point
 
 
+class AxesDescriptor:
+    """A descriptor for the axes attribute on the RiskMatrix.
+
+    Raises:
+        KeyError: When an axis name is not found in the axes.
+        AttributeError: Overriding or deleting the axes attribute is not allowed.
+    """
+
+    def __init__(self):
+        self._axes = []
+
+    def __get__(self, instance, owner) -> Tuple[Axis, ...]:
+        return tuple(self._axes)
+
+    def __getitem__(self, val: Union[str, int]) -> Axis:
+        if isinstance(val, str):
+            for axis in self._axes:
+                if axis.name == val:
+                    return axis
+            raise KeyError(f"No axis named {val}.")
+
+        if isinstance(val, int):
+            return self._axes[val]
+
+        raise TypeError(f"Axes indices must be integers, or strings, not {val}")
+
+    def __set__(self, instance, val):
+        raise AttributeError("Can't override axes attribute. Add axes individually.")
+
+    def __delete__(self, instance):
+        raise AttributeError("Can't delete axes attribute.")
+
+    def add(self, axis: Axis):
+        self._axes.append(axis)
+
+
 class RiskMatrix:
     """The main class to build a risk matrix."""
 
     def __init__(self, name: str) -> None:
         self.name = name
-        self.axes: Dict[str, Axis] = {}
+        self.axes: AxesDescriptor = AxesDescriptor()
         self._categories: Dict[int, Category] = {}
         self._coordinates: Dict[Coordinate, Category] = {}
 
@@ -80,7 +116,7 @@ class RiskMatrix:
                 axis_point = Point(str(code), "")
                 axis.add_point(axis_point)
 
-        self.axes[axis.name] = axis
+        self.axes.add(axis)
 
         return axis
 

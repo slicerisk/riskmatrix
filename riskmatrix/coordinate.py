@@ -34,8 +34,13 @@ class Coordinate:
                 "The points in this coordinate are not all from the same matrix."
             )
 
-        self.points = tuple(points)
         self.matrix: RiskMatrix = set(p.axis.matrix for p in points).pop()
+        self.points = []
+        for axis in self.matrix.axes:
+            for point in points:
+                if axis == point.axis:
+                    self.points.append(point)
+        self.points = tuple(self.points)
 
     def __repr__(self):
         return f"Coordinate({self.points})"
