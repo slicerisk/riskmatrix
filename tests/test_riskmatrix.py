@@ -219,11 +219,12 @@ class TestCoordinate:
 
         rm.map_coordinates(med, [(b, two), (b, three), (c, one), (c, two)])
 
-        c2 = rm.map_coordinate(hig, (c, two))
+        c3 = rm.map_coordinate(hig, (c, three))
 
-        get_c2 = rm.get_coordinate("C2")
-        assert get_c2 == c2
-        assert rm.get_category(get_c2) == med
+        get_c3 = rm.get_coordinate("C3")
+        assert get_c3 == c3
+        assert rm.get_category(get_c3) == hig
+
 
     def test_coordinate_code(self, rm_with_categories):
 
