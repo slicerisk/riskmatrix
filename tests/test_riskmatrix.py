@@ -225,6 +225,21 @@ class TestCoordinate:
         assert get_c3 == c3
         assert rm.get_category(get_c3) == hig
 
+    def test_equivalent_coordinate_value(self, rm_full):
+        """Test if we can force a coordinate order if two Coordinates have
+        an equal value by using alphabetical order. Then also test if we can
+        turn it off and let max() return the first of the equal values.
+        """
+        rm = rm_full
+
+        c2 = rm.get_coordinate("C2")
+        b3 = rm.get_coordinate("B3")
+
+        rm.force_coordinate_order = True
+        assert max(b3, c2) == c2
+
+        rm.force_coordinate_order = False
+        assert max(b3, c2) == b3
 
     def test_coordinate_code(self, rm_with_categories):
 
