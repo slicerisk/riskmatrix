@@ -28,6 +28,18 @@ class AxesDescriptor:
 
         raise TypeError(f"Axes indices must be integers, or strings, not {val}")
 
+    def __iter__(self):
+        self.__i = 0
+        return self
+
+    def __next__(self):
+        try:
+            val = self[self.__i]
+        except IndexError:
+            raise StopIteration
+        self.__i += 1
+        return val
+
     def __set__(self, instance, val):
         raise AttributeError("Can't override axes attribute. Add axes individually.")
 
