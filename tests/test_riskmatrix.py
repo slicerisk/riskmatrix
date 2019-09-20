@@ -243,7 +243,7 @@ class TestCoordinate:
         rm = rm_full
         max_coordinate = rm.coordinates[-1]
 
-        assert rm.get_max_coordinate(coordinates=rm.coordinates) == max_coordinate
+        assert max(rm.coordinates) == max_coordinate
         # This should work once there is an unambiguous way to determine what the maximum coordinate is
         # assert max(rm.coordinates) == max_coordinate
 
