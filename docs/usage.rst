@@ -4,12 +4,12 @@ Usage
 
 To use Riskmatrix in a project::
 
-    from riskmatrix import Riskmatrix
+    from riskmatrix import RiskMatrix
 
-    rm = Riskmatrix("RAM")
+    rm = RiskMatrix("RAM")
 
-    severity    = rm.add_axis("Severity", size=5)
     probability = rm.add_axis("Probability", size=5, use_letters=True)
+    severity    = rm.add_axis("Severity", size=5)
 
     low = rm.add_category("LOW", "Low risk", "#2e7d32", "#e8f5e9")
     med = rm.add_category("MED", "Medium risk", "#ef6c00", "#ffe97d")
@@ -49,6 +49,16 @@ To use Riskmatrix in a project::
         (s5, p4),
         (s5, p5),
     ])
+
+    user_a1 = "A1"
+    user_b2 = "B2"
+    user_c3 = "C3"
+
+    one   = rm.get_coordinate(user_a1)
+    two   = rm.get_coordinate(user_b2)
+    three = rm.get_coordinate(user_c3)
+
+    assert max(one, two, three) == three
 
 Define a riskmatrix
 -------------------
