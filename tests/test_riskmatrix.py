@@ -209,7 +209,7 @@ class TestCoordinate:
         # assert rm.get_category(b2) == med
         assert rm.get_category(c3) == hig
 
-    def test_get_coordinate(self, rm_with_categories, rm_coordinates):
+    def test_get_coordinate(self, rm_with_categories):
         rm = rm_with_categories
         low, med, hig = rm.categories
         a, b, c = rm.axes["x"].points
