@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Iterable, Union
+from typing import Iterable, Union, Tuple
 from .axis import AxisPoint
 
 # This is a hack to make mypy happy
@@ -20,19 +20,19 @@ class Coordinate:
             raise ValueError(
                 "There is at least one point with an axis that is not tied to a matrix."
             )
-
         if len(set(p.axis.matrix for p in points)) != 1:
             raise ValueError(
                 "The points in this coordinate are not all from the same matrix."
             )
 
         self.matrix: RiskMatrix = set(p.axis.matrix for p in points).pop()
-        self.points = []
+        # Order the points in the coordinate with the same order as the axes in the matrix.
+        _points = []
         for axis in self.matrix.axes:
             for point in points:
                 if axis == point.axis:
-                    self.points.append(point)
-        self.points = tuple(self.points)
+                    _points.append(point)
+        self.points: Tuple[AxisPoint, ...] = tuple(_points)
 
     def __repr__(self):
         return f"Coordinate({self.points})"
