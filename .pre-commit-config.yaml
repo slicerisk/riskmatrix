@@ -19,6 +19,8 @@ repos:
     - id: bandit
       name: Run bandit for security checks
       language_version: python3.7
+      args:
+        - --skip=B101
 -   repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.711
     hooks:
