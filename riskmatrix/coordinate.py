@@ -44,7 +44,7 @@ class Coordinate:
         self.points: Tuple[AxisPoint, ...] = tuple(_points)
 
     def __repr__(self):
-        return f"Coordinate({self.points})"
+        return f"Coordinate({[p.code for p in self.points]})"
 
     def __str__(self) -> str:
         """ The str format is also used for determining equality with coordinates in string format """
