@@ -89,3 +89,7 @@ class Coordinate:
     @property
     def value(self) -> int:
         return sum(p.value for p in self.points)
+
+    @property
+    def category(self):
+        return self.matrix.get_category(self)
