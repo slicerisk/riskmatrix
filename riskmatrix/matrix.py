@@ -85,9 +85,9 @@ class RiskMatrix:
         """Return a tuple of all Coordinates in the RiskMatrix.
 
         Returns:
-            Tuple[Coordinate, ...]: Unordered tuple of Coordinates.
+            Tuple[Coordinate, ...]: Tuple of Coordinates sorted alphabetically.
         """
-        return tuple(self._coordinates.keys())
+        return tuple(sorted(self._coordinates, key=lambda c: str(c)))
 
     def add_axis(
         self,
