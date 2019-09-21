@@ -214,19 +214,24 @@ class RiskMatrix:
         for coordinate_points in coordinates:
             self.map_coordinate(category, coordinate_points)
 
-    def get_category(self, coordinate: Coordinate) -> Optional[Category]:
+    def get_category(self, coordinate: Coordinate) -> Category:
         """Give a Coordinate to get a Category if there is a mapping between them.
 
         Args:
             coordinate (Coordinate): An instance of Coordinate.
 
         Returns:
-            Optional[Category]: An instance of Category (or None if no Category could be found).
+            Category: An instance of Category.
+
+        Exceptions:
+            IndexError: If the Coordinate couldn't be found, an IndexError is raised.
         """
-        for c in self._coordinates:
-            if c == coordinate:
-                return self._coordinates[c]
-        return None
+        try:
+            return self._coordinates[coordinate]
+        except KeyError as e:
+            raise KeyError(
+                f"{coordinate} couldn't be found. Are you sure you mapped it?"
+            ) from e
 
     def get_coordinate(self, coordinate: str) -> Optional[Coordinate]:
         """Get the Coordinate for a string code like 'A2'.
