@@ -1,6 +1,6 @@
 from __future__ import annotations
 from itertools import combinations
-from typing import Iterable, Union
+from typing import Iterable, Union, Tuple
 from .axis import AxisPoint
 
 # This is a hack to make mypy happy
@@ -35,12 +35,13 @@ class Coordinate:
             )
 
         self.matrix: RiskMatrix = set(p.axis.matrix for p in points).pop()
-        self.points = []
+        # Order the points in the coordinate with the same order as the axes in the matrix.
+        _points = []
         for axis in self.matrix.axes:
             for point in points:
                 if axis == point.axis:
-                    self.points.append(point)
-        self.points = tuple(self.points)
+                    _points.append(point)
+        self.points: Tuple[AxisPoint, ...] = tuple(_points)
 
     def __repr__(self):
         return f"Coordinate({self.points})"
@@ -56,20 +57,6 @@ class Coordinate:
         return hash(self.points)
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Coordinate):
-            return NotImplemented
-        return sum(p.value for p in self.points) == sum(p.value for p in other.points)
-
-    def __lt__(self, other: object) -> bool:
-        if not isinstance(other, Coordinate):
-            return NotImplemented
-        return sum(p.value for p in self.points) < sum(p.value for p in other.points)
-
-    @property
-    def value(self) -> int:
-        return sum(p.value for p in self.points)
-
-    def location_equals(self, other: Union[Coordinate, str]) -> bool:
         """Check if two Coordinates are pointing to the same location.
 
         Args:
@@ -78,6 +65,27 @@ class Coordinate:
         Returns:
             bool: Return True if coordinate location is equal, return False otherwise.
         """
+        if not isinstance(other, (Coordinate, str)):
+            return NotImplemented
         if isinstance(other, str):
             return str(self) == other
         return self.points == other.points
+
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Coordinate):
+            return NotImplemented
+
+        value_self = sum(p.value for p in self.points)
+        value_other = sum(p.value for p in other.points)
+
+        # If we need an order even if two coordinates have equivalent values,
+        # compare the strings. This means the coordinates are ordered alphabetically
+        # which is determined by the order of the axes.
+        if value_self == value_other and self.matrix.force_coordinate_order:
+            return str(self) < str(other)
+
+        return value_self < value_other
+
+    @property
+    def value(self) -> int:
+        return sum(p.value for p in self.points)

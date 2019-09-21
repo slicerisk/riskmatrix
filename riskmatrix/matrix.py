@@ -28,6 +28,18 @@ class AxesDescriptor:
 
         raise TypeError(f"Axes indices must be integers, or strings, not {val}")
 
+    def __iter__(self):
+        self.__i = 0
+        return self
+
+    def __next__(self):
+        try:
+            val = self[self.__i]
+        except IndexError:
+            raise StopIteration
+        self.__i += 1
+        return val
+
     def __set__(self, instance, val):
         raise AttributeError("Can't override axes attribute. Add axes individually.")
 
@@ -46,6 +58,10 @@ class RiskMatrix:
         self.axes: AxesDescriptor = AxesDescriptor()
         self._categories: Dict[int, Category] = {}
         self._coordinates: Dict[Coordinate, Category] = {}
+
+        # This boolean determines whether it's ok to force Coordinate order if they have a similar value.
+        # Setting it to False can make ordering Coordinates with equivalent values ambiguous.
+        self.force_coordinate_order = True
 
     def __repr__(self):
         return f"RiskMatrix({self.name}) " + str(self.axes)
@@ -234,44 +250,3 @@ class RiskMatrix:
             Will return None if there are no Categories defined in the RiskMatrix.
         """
         return max(self.categories, default=None)
-
-    def get_max_coordinate(
-        self,
-        *,
-        coordinates: Iterable[Coordinate] = None,
-        coordinate_strings: Iterable[str] = None,
-    ) -> Optional[Coordinate]:
-        """Get the Coordinate with the highest value for a list of Coordinates.
-
-        Todo:
-            It's possible to get coordinates with the same value. It now returns the first coordinate with the
-            highest value. This should be unambiguous by having a resolution order for the axes.
-
-        Args:
-            coordinates (Iterable[Coordinate], optional): An iterable of Coordinates. Defaults to None.
-            coordinate_strings (Iterable[str], optional): An iterable of string Coordinate codes. Defaults to None.
-
-        Returns:
-            Optional[Coordinate]: The Coordinate with the highest value.
-        """
-
-        all_coordinates = []
-
-        if coordinate_strings:
-            for c_str in coordinate_strings:
-                c = self.get_coordinate(c_str)
-                if c:
-                    all_coordinates.append(c)
-
-        if coordinates:
-            all_coordinates += coordinates
-
-        max_coordinate = None
-        max_val = 0
-
-        for coordinate in all_coordinates:
-            if coordinate.value > max_val:
-                max_val = coordinate.value
-                max_coordinate = coordinate
-
-        return max_coordinate

@@ -224,7 +224,7 @@ class TestCoordinate:
         else:
             assert False
 
-    def test_get_coordinate(self, rm_with_categories, rm_coordinates):
+    def test_get_coordinate(self, rm_with_categories):
         rm = rm_with_categories
         low, med, hig = rm.categories
         a, b, c = rm.axes["x"].points
@@ -234,11 +234,27 @@ class TestCoordinate:
 
         rm.map_coordinates(med, [(b, two), (b, three), (c, one), (c, two)])
 
-        c2 = rm.map_coordinate(hig, (c, two))
+        c3 = rm.map_coordinate(hig, (c, three))
 
-        get_c2 = rm.get_coordinate("C2")
-        assert get_c2 == c2
-        assert rm.get_category(get_c2) == med
+        get_c3 = rm.get_coordinate("C3")
+        assert get_c3 == c3
+        assert rm.get_category(get_c3) == hig
+
+    def test_equivalent_coordinate_value(self, rm_full):
+        """Test if we can force a coordinate order if two Coordinates have
+        an equal value by using alphabetical order. Then also test if we can
+        turn it off and let max() return the first of the equal values.
+        """
+        rm = rm_full
+
+        c2 = rm.get_coordinate("C2")
+        b3 = rm.get_coordinate("B3")
+
+        rm.force_coordinate_order = True
+        assert max(b3, c2) == c2
+
+        rm.force_coordinate_order = False
+        assert max(b3, c2) == b3
 
     def test_coordinate_code(self, rm_with_categories):
 
@@ -258,7 +274,7 @@ class TestCoordinate:
         rm = rm_full
         max_coordinate = rm.coordinates[-1]
 
-        assert rm.get_max_coordinate(coordinates=rm.coordinates) == max_coordinate
+        assert max(rm.coordinates) == max_coordinate
         # This should work once there is an unambiguous way to determine what the maximum coordinate is
         # assert max(rm.coordinates) == max_coordinate
 
