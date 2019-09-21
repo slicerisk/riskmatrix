@@ -99,6 +99,66 @@ class TestRiskMatrix:
         assert rm.name == name2
         assert rm.name != name
 
+    def test_sorted_coordinates(self, rm_full):
+        rm = rm_full
+        raw_data = ["A1", "B2", "C3", "A3", "B1", "B1", "A2"]
+
+        # Get top 2 values
+        coordinates = (rm.get_coordinate(c) for c in raw_data)
+        r = sorted(coordinates, reverse=True)[:2]
+
+        assert r == [rm.get_coordinate("C3"), rm.get_coordinate("B2")]
+
+    def test_coordinates_have_right_category(self, rm_full):
+        # Each category has all coordinates
+        # These are the categories in rm_full:
+        # low =  a1, a2, a3, b1
+        # med =  b2, c1
+        # hig =  b3, c2, c3
+        rm = rm_full
+
+        a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm.coordinates
+        low, med, hig = rm.categories
+
+        assert a1.category == low
+        assert a2.category == low
+        assert a3.category == low
+        assert b1.category == low
+        assert b2.category == med
+        assert c1.category == med
+        assert b3.category == hig
+        assert c2.category == hig
+        assert c3.category == hig
+
+    def test_coordinates_order_alphabetical(self, rm_full, rm_coordinates):
+        rm = rm_full
+        a1, a2, a3, b1, b2, b3, c1, c2, c3 = rm_coordinates
+        a1a, a2a, a3a, b1a, b2a, b3a, c1a, c2a, c3a = rm.coordinates
+
+        assert a1 == a1a
+        assert a2 == a2a
+        assert a3 == a3a
+        assert b1 == b1a
+        assert b2 == b2a
+        assert b3 == b3a
+        assert c1 == c1a
+        assert c2 == c2a
+        assert c3 == c3a
+
+    def test_coordinate_median(self, rm_full):
+        rm = rm_full
+        raw_data = ["A1", "B2", "C3", "A3", "B1", "B1", "A2"]
+
+        # Convert into coordinates
+        coordinates = (rm.get_coordinate(c) for c in raw_data)
+
+        # Calculate median
+        import statistics
+
+        median = statistics.median(coordinates)
+
+        assert median == rm_full.get_coordinate("B1")
+
 
 class TestAxis:
     def test_add_axis_with_points(self, rm, rm_points):
