@@ -7,7 +7,16 @@ from typing import List, Optional, Tuple, Union
 if False:
     from .matrix import RiskMatrix
 
+
 Point = namedtuple("Point", "code name description", defaults=[""])
+Point.__doc__ = """
+A tuple to manually define points on an axis. These can be added to an axis like:
+> p = Point("A", "Unlikely", "This is an unlikely event.")
+> ax = Axis()
+> ax.add_point(p)
+The Point will be used to create an AxisPoint. The AxisPoint has a reference to
+its parent Axis.
+"""
 
 
 @total_ordering
@@ -87,17 +96,13 @@ class Axis:
         return tuple(self._points)
 
     def add_point(self, point: Point) -> None:
-        """Add an AxisPoint to the Axis.
+        """Add a Point to the Axis.
 
-        If no value is set, the AxisPoint value is set to the length+1 of the Axis.
-        This means it's possible to have a point with a set value, and one without
-        that gets set to the same value. In these cases, a ValueError is thrown.
+        The Point is used to create an AxisPoint. The AxisPoint also has a reference to
+        the parent Axis and a value to order them with other AxisPoints on the Axis.
 
         Args:
             point (Point): The point to add to the Axis.
-
-        Raises:
-            ValueError: Is raised when attempting to add an AxisPoint with a value that already exists.
 
         Returns:
             None
