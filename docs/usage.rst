@@ -15,39 +15,39 @@ To use Riskmatrix in a project::
     med = rm.add_category("MED", "Medium risk", "#ef6c00", "#ffe97d")
     hig = rm.add_category("HIG", "High risk", "#c62828", "#ffcccb")
 
-    s1, s2, s3, s4, s5 = severity.points
+    sA, sB, sC, sD, sE = severity.points
     p1, p2, p3, p4, p5 = probability.points
 
     rm.map_coordinates(low, [
-        (s1, p1),
-        (s1, p2),
-        (s1, p3),
-        (s2, p1),
-        (s2, p2),
-        (s3, p1),
+        (sA, p1),
+        (sA, p2),
+        (sA, p3),
+        (sB, p1),
+        (sB, p2),
+        (sC, p1),
     ])
     rm.map_coordinates(med, [
-        (s1, p4),
-        (s1, p5),
-        (s2, p3),
-        (s2, p4),
-        (s2, p5),
-        (s3, p2),
-        (s3, p3),
-        (s3, p4),
-        (s4, p1),
-        (s4, p2),
-        (s4, p3),
-        (s5, p1),
-        (s5, p2),
+        (sA, p4),
+        (sA, p5),
+        (sB, p3),
+        (sB, p4),
+        (sB, p5),
+        (sC, p2),
+        (sC, p3),
+        (sC, p4),
+        (sD, p1),
+        (sD, p2),
+        (sD, p3),
+        (sE, p1),
+        (sE, p2),
     ])
     rm.map_coordinates(hig, [
-        (s3, p5),
-        (s4, p4),
-        (s4, p5),
-        (s5, p3),
-        (s5, p4),
-        (s5, p5),
+        (sC, p5),
+        (sD, p4),
+        (sD, p5),
+        (sE, p3),
+        (sE, p4),
+        (sE, p5),
     ])
 
     user_a1 = "A1"
