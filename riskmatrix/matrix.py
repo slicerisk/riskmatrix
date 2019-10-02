@@ -61,7 +61,7 @@ class RiskMatrix:
 
         # This boolean determines whether it's ok to force Coordinate order if they have a similar value.
         # Setting it to False can make ordering Coordinates with equivalent values ambiguous.
-        self.force_coordinate_order = True
+        self.strict_coordinate_comparison = True
 
     def __repr__(self):
         return f"RiskMatrix({self.name}) " + str(self.axes)

@@ -310,11 +310,39 @@ class TestCoordinate:
         c2 = rm.get_coordinate("C2")
         b3 = rm.get_coordinate("B3")
 
-        rm.force_coordinate_order = True
+        rm.strict_coordinate_comparison = True
         assert max(b3, c2) == c2
 
-        rm.force_coordinate_order = False
+        rm.strict_coordinate_comparison = False
         assert max(b3, c2) == b3
+
+    def test_equivalent_coordinate_value_order(self, rm_full):
+        rm = rm_full
+
+        rm.strict_coordinate_comparison = True
+        a3 = rm.get_coordinate("A3")
+        b2 = rm.get_coordinate("B2")
+        c1 = rm.get_coordinate("C1")
+
+        assert a3 < b2 < c1
+
+        rm.strict_coordinate_comparison = False
+
+        assert a3 == b2 == c1
+
+    def test_equivalent_category_value(self, rm_with_categories):
+        rm = rm_with_categories
+        low, med, hig = rm.categories
+        a, b, c = rm.axes["x"].points
+        one, two, three = rm.axes["y"].points
+
+        # This is a reversed mapping. High Coordinates have low categories and vice versa.
+        c3 = rm.map_coordinate(low, (c, three))
+        b2 = rm.map_coordinate(med, (b, two))
+        a1 = rm.map_coordinate(hig, (a, one))
+
+        # Now I expect the category value to take precedence over the Coordinate value.
+        assert c3 < b2 < a1
 
     def test_coordinate_code(self, rm_with_categories):
 

@@ -46,9 +46,14 @@ class Coordinate:
         """
         if not isinstance(other, (Coordinate, str)):
             return NotImplemented
+
         if isinstance(other, str):
-            return str(self) == other
-        return self.points == other.points
+            other = self.matrix.get_coordinate(other)
+
+        if self.matrix.strict_coordinate_comparison:
+            return str(self) == str(other)
+
+        return self.value == other.value
 
     def __lt__(self, other: object) -> bool:
         if not isinstance(other, Coordinate):
@@ -57,10 +62,13 @@ class Coordinate:
         value_self = sum(p.value for p in self.points)
         value_other = sum(p.value for p in other.points)
 
-        # If we need an order even if two coordinates have equivalent values,
-        # compare the strings. This means the coordinates are ordered alphabetically
-        # which is determined by the order of the axes.
-        if value_self == value_other and self.matrix.force_coordinate_order:
+        # Start with a comparison of Category. This should take precedence over the location value.
+        if self.category != other.category:
+            return self.category.value < other.category.value
+
+        # If mode is set to strict, compare Coordinates with equal value
+        # on the exact string representation instead of value.
+        if self.matrix.strict_coordinate_comparison and value_self == value_other:
             return str(self) < str(other)
 
         return value_self < value_other
