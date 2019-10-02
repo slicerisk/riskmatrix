@@ -93,7 +93,7 @@ class RiskMatrix:
         self,
         axis_name: str,
         *,
-        points: Iterable[Tuple] = None,
+        points: Iterable[Point] = None,
         size: int = None,
         use_letters: bool = False,
     ) -> Axis:
@@ -123,7 +123,7 @@ class RiskMatrix:
 
         if points:
             for point in points:
-                p = Point(*point)
+                p = Point(point.code, point.name, point.description)
                 axis.add_point(p)
         elif size:
             for code in range(1, size + 1):

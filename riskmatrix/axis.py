@@ -1,5 +1,5 @@
 from __future__ import annotations
-from collections import namedtuple
+from dataclasses import dataclass
 from functools import total_ordering
 from typing import List, Optional, Tuple, Union
 
@@ -8,15 +8,21 @@ if False:
     from .matrix import RiskMatrix
 
 
-Point = namedtuple("Point", "code name description", defaults=[""])
-Point.__doc__ = """
-A tuple to manually define points on an axis. These can be added to an axis like:
-> p = Point("A", "Unlikely", "This is an unlikely event.")
-> ax = Axis()
-> ax.add_point(p)
-The Point will be used to create an AxisPoint. The AxisPoint has a reference to
-its parent Axis.
-"""
+@dataclass
+class Point:
+    """ A class to manually define points on an axis.
+
+    These can be added to an axis like:
+    > p = Point("A", "Unlikely", "This is an unlikely event.")
+    > ax = Axis()
+    > ax.add_point(p)
+    The Point will be used to create an AxisPoint. The AxisPoint has a reference to
+    its parent Axis.
+    """
+
+    code: str = ""
+    name: str = ""
+    description: str = ""
 
 
 @total_ordering
@@ -33,12 +39,12 @@ class AxisPoint:
     ) -> None:
         self.code = code
         self.name = name
-        self.desc = description
+        self.description = description
         self.value = value
         self.axis = axis
 
     def __repr__(self):
-        return f"AxisPoint{self.code, self.name, self.desc}"
+        return f"AxisPoint({self.code, self.name, self.description})"
 
     def __str__(self):
         return f"Point: {self.code} - {self.name}"
@@ -107,7 +113,7 @@ class Axis:
         Returns:
             None
         """
-        code, name, description = point
+        code, name, description = point.code, point.name, point.description
         value = len(self._points) + 1
         axis = self
 

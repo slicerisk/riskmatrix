@@ -169,7 +169,7 @@ class TestAxis:
 
         assert a.code == aa.code
         assert a.name == aa.name
-        assert a.description == aa.desc
+        assert a.description == aa.description
         assert a.code != bb.code
         assert b.code == bb.code
         assert rm.axes["x"][0] is aa
