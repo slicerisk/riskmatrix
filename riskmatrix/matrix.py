@@ -224,7 +224,7 @@ class RiskMatrix:
             Category: An instance of Category.
 
         Exceptions:
-            IndexError: If the Coordinate couldn't be found, an IndexError is raised.
+            KeyError: If the Coordinate couldn't be found, a KeyError is raised.
         """
         try:
             return self._coordinates[coordinate]
