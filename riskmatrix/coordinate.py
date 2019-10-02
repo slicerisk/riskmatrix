@@ -12,28 +12,7 @@ class Coordinate:
     """A collection of AxisPoints to represent a location in a matrix."""
 
     def __init__(self, points: Iterable[AxisPoint]) -> None:
-        if any(p.axis is None for p in points):
-            raise ValueError(
-                "There is at least one point which is not tied to an axis."
-            )
-
-        if any(p.axis.matrix is None for p in points):
-            raise ValueError(
-                "There is at least one point with an axis that is not tied to a matrix."
-            )
-
-        point_pairs = (pair for pair in combinations(points, 2))
-        pair_sets = (set((pair[0].axis, pair[1].axis)) for pair in point_pairs)
-        if any((len(s) == 1 for s in pair_sets)):
-            raise ValueError(
-                "There are two points on the same axis. Every point of a coordinate should be on a different axis."
-            )
-
-        if len(set(p.axis.matrix for p in points)) != 1:
-            raise ValueError(
-                "The points in this coordinate are not all from the same matrix."
-            )
-
+        self.__check_requirements(points)
         self.matrix: RiskMatrix = set(p.axis.matrix for p in points).pop()
         # Order the points in the coordinate with the same order as the axes in the matrix.
         _points = []
@@ -93,3 +72,26 @@ class Coordinate:
     @property
     def category(self):
         return self.matrix.get_category(self)
+
+    def __check_requirements(self, points: Iterable[AxisPoint]):
+        if any(p.axis is None for p in points):
+            raise ValueError(
+                "There is at least one point which is not tied to an axis."
+            )
+
+        if any(p.axis.matrix is None for p in points):
+            raise ValueError(
+                "There is at least one point with an axis that is not tied to a matrix."
+            )
+
+        point_pairs = (pair for pair in combinations(points, 2))
+        pair_sets = (set((pair[0].axis, pair[1].axis)) for pair in point_pairs)
+        if any((len(s) == 1 for s in pair_sets)):
+            raise ValueError(
+                "There are two points on the same axis. Every point of a coordinate should be on a different axis."
+            )
+
+        if len(set(p.axis.matrix for p in points)) != 1:
+            raise ValueError(
+                "The points in this coordinate are not all from the same matrix."
+            )
