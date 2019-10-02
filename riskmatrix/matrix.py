@@ -241,11 +241,16 @@ class RiskMatrix:
 
         Returns:
             Optional[Coordinate]: A Coordinate if it can be found, or None.
+
+        Exceptions:
+            KeyError: If the Coordinate couldn't be found, a KeyError is raised.
         """
         for c in self._coordinates:
             if str(c) == coordinate:
                 return c
-        return None
+        raise KeyError(
+            f"{coordinate} couldn't be found. Here are the coordinates: {self.coordinates}"
+        )
 
     def get_max_category(self) -> Optional[Category]:
         """Get the Category with the highest value in the RiskMatrix.
