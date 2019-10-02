@@ -251,7 +251,7 @@ class TestCategory:
         assert hig.value == 2
 
     def test_max_category(self, rm_full):
-        assert rm_full.get_max_category().value == 2
+        assert max(rm_full.categories).value == 2
 
 
 class TestCoordinate:

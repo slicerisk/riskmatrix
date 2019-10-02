@@ -251,12 +251,3 @@ class RiskMatrix:
         raise KeyError(
             f"{coordinate} couldn't be found. Here are the coordinates: {self.coordinates}"
         )
-
-    def get_max_category(self) -> Optional[Category]:
-        """Get the Category with the highest value in the RiskMatrix.
-
-        Returns:
-            Optional[Category]: The Category with the highest value.
-            Will return None if there are no Categories defined in the RiskMatrix.
-        """
-        return max(self.categories, default=None)
