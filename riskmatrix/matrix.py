@@ -233,7 +233,7 @@ class RiskMatrix:
                 f"{coordinate} couldn't be found. Are you sure you mapped it?"
             ) from e
 
-    def get_coordinate(self, coordinate: str) -> Optional[Coordinate]:
+    def get_coordinate(self, coordinate: str) -> Coordinate:
         """Get the Coordinate for a string code like 'A2'.
 
         Args:
