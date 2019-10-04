@@ -159,6 +159,14 @@ class TestRiskMatrix:
 
         assert median == rm_full.get_coordinate("B1")
 
+    def test_convert_number_to_letter(self):
+        rm = RiskMatrix("RAM")
+
+        assert rm._convert_number_to_letter(1) == "A"
+        assert rm._convert_number_to_letter(26) == "Z"
+        assert rm._convert_number_to_letter(27) == "AA"
+        assert rm._convert_number_to_letter(28) == "AB"
+
 
 class TestAxis:
     def test_add_axis_with_points(self, rm, rm_points):

@@ -137,21 +137,38 @@ class RiskMatrix:
         return axis
 
     def _convert_number_to_letter(self, number: int):
-        """Provide a number between 1 and 26 to return the appropriate letter.
+        """Given a number, return the appropriate letter combination.
+
+        e.g.:
+        1 returns A
+        26 returns Z
+        27 returns AA
+        28 returns AB
+        etc..
+
+        The max return value is ZZ.
 
         Args:
-            number (int): Number between 1 and 26
-
-        Raises:
-            ValueError: If the number is not between 1 and 26.
+            number (int): Number to convert into a letter.
 
         Returns:
-            str: A single letter equivalent to the number.
+            str: A letter equivalent to the number.
         """
-        if not 0 <= number <= 26:
-            raise ValueError(f"The number {number} has to be between 1 and 26.")
 
-        return "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[number - 1]
+        abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        result = ""
+        major, minor = divmod(number, 26)
+
+        if major == 1 and minor == 0:
+            return abc[number - 1]
+
+        elif major:
+            result += abc[major - 1]
+
+        if minor:
+            result += abc[minor - 1]
+
+        return result
 
     def add_category(
         self, code: str, name: str, color: str, text_color: str, description: str = ""
