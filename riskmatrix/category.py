@@ -32,3 +32,6 @@ class Category:
         if not isinstance(other, Category):
             return NotImplemented
         return self.value < other.value
+
+    def __hash__(self):
+        return f"{self.value} {self.code}"
