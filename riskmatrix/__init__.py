@@ -5,7 +5,7 @@ Riskmatrix
 
 A library to deal with risk matrix data.
 """
-__version__ = "0.0.11"
+__version__ = "0.0.12"
 
 from .axis import Axis, AxisPoint, Point
 from .category import Category
