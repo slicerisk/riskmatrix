@@ -34,4 +34,4 @@ class Category:
         return self.value < other.value
 
     def __hash__(self):
-        return f"{self.value} {self.code}"
+        return hash(f"{self.value} {self.code}")
