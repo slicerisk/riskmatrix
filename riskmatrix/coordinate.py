@@ -1,4 +1,5 @@
 from __future__ import annotations
+from functools import total_ordering
 from itertools import combinations
 from typing import Iterable, Union, Tuple
 from .axis import AxisPoint
@@ -8,6 +9,7 @@ if False:
     from .matrix import RiskMatrix
 
 
+@total_ordering
 class Coordinate:
     """A collection of AxisPoints to represent a location in a matrix."""
 

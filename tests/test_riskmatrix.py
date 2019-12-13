@@ -324,6 +324,17 @@ class TestCoordinate:
         rm.strict_coordinate_comparison = False
         assert max(b3, c2) == b3
 
+    def test_coordinate_ordering(self, rm_full):
+        rm = rm_full
+
+        c2 = rm.get_coordinate("C2")
+        b3 = rm.get_coordinate("B3")
+
+        assert b3 < c2
+        assert c2 > b3
+        assert b3 <= c2
+        assert c2 >= b3
+
     def test_equivalent_coordinate_value_order(self, rm_full):
         rm = rm_full
 
