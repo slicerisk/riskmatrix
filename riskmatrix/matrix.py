@@ -13,6 +13,9 @@ class AxesDescriptor:
     def __init__(self):
         self._axes = []
 
+    def __str__(self):
+        return " * ".join([str(ax) for ax in self._axes])
+
     def __get__(self, instance, owner) -> Tuple[Axis, ...]:
         return tuple(self._axes)
 
