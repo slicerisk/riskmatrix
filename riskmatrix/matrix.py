@@ -72,6 +72,36 @@ class RiskMatrix:
     def __str__(self):
         return self.name
 
+    def __getstate__(self) -> Dict:
+        """When using pickle on Coordinates, this avoids a circular reference where
+        Coordinate is still being constructed, while RiskMatrix is trying to get its hash
+        to construct the _coordinates dict.
+        """
+        return {
+            "name": self.name,
+            "axes": self.axes,
+            "strict_coordinate_comparison": self.strict_coordinate_comparison,
+            "_categories": self._categories,
+            "_coordinates": [
+                (coord.points, cat) for (coord, cat) in self._coordinates.items()
+            ],
+        }
+
+    def __setstate__(self, state):
+        self.name = state["name"]
+        self.axes = state["axes"]
+        self.strict_coordinate_comparison = state["strict_coordinate_comparison"]
+        self._categories = state["_categories"]
+
+        coordinate_dict = {}
+
+        for points, cat in state["_coordinates"]:
+            coord = Coordinate(points)
+            coord.matrix = self
+            coordinate_dict[coord] = cat
+
+        self._coordinates = coordinate_dict
+
     @property
     def categories(self) -> Tuple[Category, ...]:
         """Return a tuple of all Categories in the Riskmatrix.
